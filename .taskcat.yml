@@ -1,0 +1,27 @@
+project:
+  name: qs-workshop
+  owner: owner@amazon.com
+  package_lambda: false
+  regions:
+  - ap-southeast-1
+  - ap-southeast-2
+  - eu-central-1
+  - eu-west-1
+  - us-east-1
+  - us-west-1
+  - us-west-2
+  s3_bucket: ''
+tests:
+  lab-master-vpc:
+    parameters:
+      AvailabilityZones: $[taskcat_getaz_2]
+      EmailAddress: owner@amazon.com
+      KeyPairName: qsworkshop
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3KeyPrefix: qs-workshop/
+      RemoteAccessCIDR: 0.0.0.0/0
+      WebserverCIDR: 0.0.0.0/0
+    regions:
+    - us-west-2
+    s3_bucket: ''
+    template: templates/master.template.yaml
