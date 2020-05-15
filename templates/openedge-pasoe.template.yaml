@@ -180,24 +180,11 @@ Resources:
         WaitOnResourceSignals: true
   WebServerLaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
-    Metadata:
-      'AWS::CloudFormation::Init':
-        configSets:
-          webserver_install:
-            - config-webserver
-            - run_service-webserver
-        config-webserver:
-          packages:
-            apt:
-              nginx: []
-        run_service-webserver:
-          commands:
-            start_weberver:
-              command: /etc/init.d/nginx start
     Properties:
       KeyName: !Ref KeyPairName
 #      ImageId: ami-01eb401767b1bea24
-      ImageId: ami-0905f7eaeca3cd35f
+#      ImageId: ami-0905f7eaeca3cd35f
+      ImageId: ami-079b11fd6007bf576
 #      ImageId: !FindInMap 
 #        - AWSAMIRegionMap
 #        - !Ref 'AWS::Region'
@@ -205,59 +192,10 @@ Resources:
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref PASOESecurityGroup
-      UserData: !Base64 
+      UserData: !Base64
         'Fn::Sub':
           - >
             #!/bin/bash -x
-
-            #CFN Functions
-
-            function cfn_fail
-
-            {
-
-            cfn-signal -e 1 --stack ${AWS::StackName} --region ${AWS::Region}
-            --resource WebServerGroup
-
-            exit 1
-
-            }
-
-            function cfn_success
-
-            {
-
-            cfn-signal -e 0 --stack ${AWS::StackName} --region ${AWS::Region}
-            --resource WebServerGroup
-
-            exit 0
-
-            }
-
-            S3URI=https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}
-
-            echo \'[Cloning: Load QuickStart Common Utils]\'
-
-            #Once Repo is public (Use quickstart-linux-utilities submodue)
-
-            git clone
-            https://github.com/aws-quickstart/quickstart-linux-utilities.git
-
-            source /quickstart-linux-utilities/quickstart-cfn-tools.source
-
-            echo \'[Loaded: Load QuickStart Common Utils]\'
-
-            echo \'[Update Operating System]\'
-
-            qs_update-os || qs_err
-
-            qs_bootstrap_pip || qs_err
-
-            qs_aws-cfn-bootstrap || qs_err
-
-            cfn-init -v --stack ${AWS::StackName} --resource
-            WebServerLaunchConfig --configsets webserver_install
-            --region ${AWS::Region} || cfn_fail
 
             # Install PASOE app
 
@@ -283,12 +221,19 @@ Resources:
 
             echo ${DBHostName} >> /tmp/output.txt
 
+
+            echo ${DBHostName} >> /tmp/output.txt
+
             /install/app/deploy.sh
 
             # Signal cfn-init (final check)
 
-            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
-          - S3Region: !If 
+            #/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebServerLaunchConfig --region ${AWS::Region}
+
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
+
+            #            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
+          - S3Region: !If
               - GovCloudCondition
               - s3-us-gov-west-1
               - s3
