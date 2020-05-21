@@ -44,15 +44,15 @@ Parameters:
   DBDeployPackage:
     Description: URL to package to deploy databases into database EC2 instances
     Type: String
-    Default: https://s3.amazonaws.com/mypublicfiles1/app.tar.gz
+    Default: https://s3.amazonaws.com/mypublicfiles1/db.tar.gz
   PASOEDeployPackage:
     Description: URL to package to deploy databases into PASOE EC2 instances
     Type: String
-    Default: https://s3.amazonaws.com/mypublicfiles1/app.tar.gz
+    Default: https://s3.amazonaws.com/mypublicfiles1/pas.tar.gz
   WebDeployPackage:
     Description: URL to package to deploy Web UI into WebServer EC2 instances
     Type: String
-    Default: https://s3.amazonaws.com/mypublicfiles1/app.tar.gz
+    Default: https://s3.amazonaws.com/mypublicfiles1/web.tar.gz
   PortNumber:
     Description: Port number to use to connect to the database broker process
     Type: Number
