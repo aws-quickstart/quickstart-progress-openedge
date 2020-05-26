@@ -146,13 +146,13 @@ Resources:
       Subscription:
         - Endpoint: !Ref EmailAddress
           Protocol: email
-  WebServerGroup:
+  PASOEGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
       VPCZoneIdentifier:
         - !Ref PublicSubnet1ID
         - !Ref PublicSubnet2ID
-      LaunchConfigurationName: !Ref WebServerLaunchConfig
+      LaunchConfigurationName: !Ref PASOELaunchConfig
       MinSize: '2'
       MaxSize: '8'
       TargetGroupARNs:
@@ -178,7 +178,7 @@ Resources:
         MaxBatchSize: 1
         PauseTime: PT15M
         WaitOnResourceSignals: true
-  WebServerLaunchConfig:
+  PASOELaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
     Properties:
       KeyName: !Ref KeyPairName
@@ -228,27 +228,27 @@ Resources:
 
             # Signal cfn-init (final check)
 
-            #/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebServerLaunchConfig --region ${AWS::Region}
+            #/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource PASOELaunchConfig --region ${AWS::Region}
 
-            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource PASOEGroup --region ${AWS::Region}
 
             #            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
           - S3Region: !If
               - GovCloudCondition
               - s3-us-gov-west-1
               - s3
-  WebServerScaleUpPolicy:
+  PASOEScaleUpPolicy:
     Type: 'AWS::AutoScaling::ScalingPolicy'
     Properties:
       AdjustmentType: ChangeInCapacity
-      AutoScalingGroupName: !Ref WebServerGroup
+      AutoScalingGroupName: !Ref PASOEGroup
       Cooldown: '60'
       ScalingAdjustment: 1
-  WebServerScaleDownPolicy:
+  PASOEScaleDownPolicy:
     Type: 'AWS::AutoScaling::ScalingPolicy'
     Properties:
       AdjustmentType: ChangeInCapacity
-      AutoScalingGroupName: !Ref WebServerGroup
+      AutoScalingGroupName: !Ref PASOEGroup
       Cooldown: '60'
       ScalingAdjustment: -1
   WebServerCPUAlarmHigh:
@@ -262,10 +262,10 @@ Resources:
       EvaluationPeriods: 2
       Threshold: 90
       AlarmActions:
-        - !Ref WebServerScaleUpPolicy
+        - !Ref PASOEScaleUpPolicy
       Dimensions:
         - Name: AutoScalingGroupName
-          Value: !Ref WebServerGroup
+          Value: !Ref PASOEGroup
       ComparisonOperator: GreaterThanThreshold
   WebServerCPUAlarmLow:
     Type: 'AWS::CloudWatch::Alarm'
@@ -278,10 +278,10 @@ Resources:
       EvaluationPeriods: 2
       Threshold: 70
       AlarmActions:
-        - !Ref WebServerScaleDownPolicy
+        - !Ref PASOEScaleDownPolicy
       Dimensions:
         - Name: AutoScalingGroupName
-          Value: !Ref WebServerGroup
+          Value: !Ref PASOEGroup
       ComparisonOperator: LessThanThreshold
   ApplicationLoadBalancer:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'

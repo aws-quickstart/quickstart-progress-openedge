@@ -19,6 +19,7 @@ tests:
       KeyPairName: oeqs-us-east-1
       QSS3BucketName: $[taskcat_autobucket]
       QSS3KeyPrefix: quickstart-progress-openedge/
+      DBAccessCIDR: 0.0.0.0/0
       RemoteAccessCIDR: 0.0.0.0/0
       WebserverCIDR: 0.0.0.0/0
     regions:
