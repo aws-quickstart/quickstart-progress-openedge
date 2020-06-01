@@ -182,7 +182,7 @@ Resources:
             - run_service-webserver
         config-webserver:
           packages:
-            apt:
+            yum:
               nginx: []
         run_service-webserver:
           commands:
@@ -190,10 +190,11 @@ Resources:
               command: /etc/init.d/nginx start
     Properties:
       KeyName: !Ref KeyPairName
-      ImageId: !FindInMap 
-        - AWSAMIRegionMap
-        - !Ref 'AWS::Region'
-        - US1604HVM
+      ImageId: ami-09d95fab7fff3776c
+#      ImageId: !FindInMap 
+#        - AWSAMIRegionMap
+#        - !Ref 'AWS::Region'
+#        - US1604HVM
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref WebServerSecurityGroup
@@ -202,54 +203,9 @@ Resources:
           - >
             #!/bin/bash -x
 
-            #CFN Functions
-
-            function cfn_fail
-
-            {
-
-            cfn-signal -e 1 --stack ${AWS::StackName} --region ${AWS::Region}
-            --resource WebServerGroup
-
-            exit 1
-
-            }
-
-            function cfn_success
-
-            {
-
-            cfn-signal -e 0 --stack ${AWS::StackName} --region ${AWS::Region}
-            --resource WebServerGroup
-
-            exit 0
-
-            }
-
-            S3URI=https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}
-
-            echo \'[Cloning: Load QuickStart Common Utils]\'
-
-            #Once Repo is public (Use quickstart-linux-utilities submodue)
-
-            git clone
-            https://github.com/aws-quickstart/quickstart-linux-utilities.git
-
-            source /quickstart-linux-utilities/quickstart-cfn-tools.source
-
-            echo \'[Loaded: Load QuickStart Common Utils]\'
-
-            echo \'[Update Operating System]\'
-
-            qs_update-os || qs_err
-
-            qs_bootstrap_pip || qs_err
-
-            qs_aws-cfn-bootstrap || qs_err
-
-            cfn-init -v --stack ${AWS::StackName} --resource
-            WebServerLaunchConfig --configsets webserver_install
-            --region ${AWS::Region} || cfn_fail
+            #cfn-init -v --stack ${AWS::StackName} --resource
+            #WebServerLaunchConfig --configsets webserver_install
+            #--region ${AWS::Region} || cfn_fail
 
             # Install WebUI
 
@@ -269,7 +225,11 @@ Resources:
 
             # Signal cfn-init (final check)
 
-            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
+            #/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource PASOELaunchConfig --region ${AWS::Region}
+
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource PASOEGroup --region ${AWS::Region}
+
+            #[ $(qs_status) == 0 ] && cfn_success || cfn_fail
           - S3Region: !If 
               - GovCloudCondition
               - s3-us-gov-west-1
