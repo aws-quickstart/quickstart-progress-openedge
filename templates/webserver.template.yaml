@@ -144,8 +144,8 @@ Resources:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
       VPCZoneIdentifier:
-        - !Ref PublicSubnet1ID
-        - !Ref PublicSubnet2ID
+        - !Ref PrivateSubnet1ID
+        - !Ref PrivateSubnet2ID
       LaunchConfigurationName: !Ref WebServerLaunchConfig
       MinSize: '2'
       MaxSize: '8'

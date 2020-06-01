@@ -160,7 +160,7 @@ Resources:
     #          secretKey: !Ref SecretAccessKey
     Properties:
       ImageId: ami-0e5870d5eb42220d8
-      InstanceType: t3.micro
+      InstanceType: t3a.small
       SubnetId: !Ref PrivateSubnet1ID
       SecurityGroupIds:
         - !Ref InstanceSecurityGroup
@@ -206,7 +206,7 @@ Resources:
     #          secretKey: !Ref SecretAccessKey
     Properties:
       ImageId: ami-0e5870d5eb42220d8
-      InstanceType: t3.micro
+      InstanceType: t3a.small
       SubnetId: !Ref PrivateSubnet2ID
       SecurityGroupIds:
         - !Ref InstanceSecurityGroup
@@ -252,7 +252,7 @@ Resources:
     #          secretKey: !Ref SecretAccessKey
     Properties:
       ImageId: ami-0e5870d5eb42220d8
-      InstanceType: t3.micro
+      InstanceType: t3a.small
       SubnetId: !Ref PrivateSubnet1ID
       SecurityGroupIds:
         - !Ref InstanceSecurityGroup
