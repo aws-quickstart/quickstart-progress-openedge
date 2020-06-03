@@ -174,20 +174,20 @@ Resources:
         WaitOnResourceSignals: true
   WebServerLaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
-    Metadata:
-      'AWS::CloudFormation::Init':
-        configSets:
-          webserver_install:
-            - config-webserver
-            - run_service-webserver
-        config-webserver:
-          packages:
-            yum:
-              nginx: []
-        run_service-webserver:
-          commands:
-            start_weberver:
-              command: /etc/init.d/nginx start
+#    Metadata:
+#      'AWS::CloudFormation::Init':
+#        configSets:
+#          webserver_install:
+#            - config-webserver
+#            - run_service-webserver
+#        config-webserver:
+#          packages:
+#            yum:
+#              nginx: []
+#        run_service-webserver:
+#          commands:
+#            start_weberver:
+#              command: /etc/init.d/nginx start
     Properties:
       KeyName: !Ref KeyPairName
       ImageId: ami-09d95fab7fff3776c
@@ -207,6 +207,16 @@ Resources:
             #WebServerLaunchConfig --configsets webserver_install
             #--region ${AWS::Region} || cfn_fail
 
+            amazon-linux-extras install nginx1 -y
+
+            systemctl enable nginx 
+
+            systemctl start nginx 
+
+            mkdir -p /var/www/
+
+            ln -s /usr/share/nginx/html/ /var/www/html
+
             # Install WebUI
 
             mkdir -p /install
@@ -225,9 +235,9 @@ Resources:
 
             # Signal cfn-init (final check)
 
-            #/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource PASOELaunchConfig --region ${AWS::Region}
+            # /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebServerLaunchConfig --configsets webserver_install --region ${AWS::Region}
 
-            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource PASOEGroup --region ${AWS::Region}
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
 
             #[ $(qs_status) == 0 ] && cfn_success || cfn_fail
           - S3Region: !If 
