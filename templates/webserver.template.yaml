@@ -8,12 +8,14 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t2.medium
+    Default: t3a.medium
     AllowedValues:
       - t2.micro
       - t2.small
       - t2.medium
       - t2.large
+      - t3a.small
+      - t3a.medium
       - m4.large
       - m4.xlarge
       - m4.2xlarge

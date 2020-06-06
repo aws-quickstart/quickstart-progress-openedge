@@ -83,6 +83,8 @@ Parameters:
       - t2.small
       - t2.medium
       - t2.large
+      - t3a.small
+      - t3a.medium
       - m4.large
       - m4.xlarge
       - m4.2xlarge

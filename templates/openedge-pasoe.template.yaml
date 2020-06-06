@@ -8,12 +8,13 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t2.small
+    Default: t3a.small
     AllowedValues:
       - t2.micro
       - t2.small
       - t2.medium
       - t2.large
+      - t3a.small
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -106,35 +107,35 @@ Parameters:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      US1604HVM: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180405
+      PASOEAMZNLINUX2: Amazon Linux 2 AMI with PAS for OpenEdge
     ap-northeast-1:
-      US1604HVM: ami-60a4b21c
+      TBD: ami-60a4b21c
     ap-northeast-2:
-      US1604HVM: ami-633d920d
+      TBD: ami-633d920d
     ap-south-1:
-      US1604HVM: ami-dba580b4
+      TBD: ami-dba580b4
     ap-southeast-1:
-      US1604HVM: ami-82c9ecfe
+      TBD: ami-82c9ecfe
     ap-southeast-2:
-      US1604HVM: ami-2b12dc49
+      TBD: ami-2b12dc49
     ca-central-1:
-      US1604HVM: ami-9d7afcf9
+      TBD: ami-9d7afcf9
     eu-central-1:
-      US1604HVM: ami-cd491726
+      TBD: ami-cd491726
     eu-west-1:
-      US1604HVM: ami-74e6b80d
+      TBD: ami-74e6b80d
     eu-west-2:
-      US1604HVM: ami-506e8f37
+      TBD: ami-506e8f37
     sa-east-1:
-      US1604HVM: ami-5782d43b
+      TBD: ami-0169fb0462e7b26e3
     us-east-1:
-      US1604HVM: ami-6dfe5010
+      PASOEAMZNLINUX2: ami-0b689f27fab75c217
     us-east-2:
-      US1604HVM: ami-e82a1a8d
+      TBD: ami-e82a1a8d
     us-west-1:
-      US1604HVM: ami-493f2f29
+      TBD: ami-493f2f29
     us-west-2:
-      US1604HVM: ami-ca89eeb2
+      TBD: ami-ca89eeb2
 Conditions:
   GovCloudCondition: !Equals 
     - !Ref 'AWS::Region'
@@ -182,13 +183,10 @@ Resources:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
     Properties:
       KeyName: !Ref KeyPairName
-#      ImageId: ami-01eb401767b1bea24
-#      ImageId: ami-0905f7eaeca3cd35f
-      ImageId: ami-0b689f27fab75c217
-#      ImageId: !FindInMap 
-#        - AWSAMIRegionMap
-#        - !Ref 'AWS::Region'
-#        - US1604HVM
+      ImageId: !FindInMap 
+        - AWSAMIRegionMap
+        - !Ref 'AWS::Region'
+        - PASOEAMZNLINUX2
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref PASOESecurityGroup
