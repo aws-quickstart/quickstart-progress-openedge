@@ -1,6 +1,6 @@
 project:
-  name: qs-workshop
-  owner: owner@amazon.com
+  name: quickstart-progress-openedge
+  owner: egarcia@progress.com
   package_lambda: false
   regions:
   - ap-southeast-1
@@ -15,13 +15,14 @@ tests:
   lab-master-vpc:
     parameters:
       AvailabilityZones: $[taskcat_getaz_2]
-      EmailAddress: owner@amazon.com
-      KeyPairName: qsworkshop
+      EmailAddress: egarcia@progress.com
+      KeyPairName: oeqs-us-east-1
       QSS3BucketName: $[taskcat_autobucket]
-      QSS3KeyPrefix: qs-workshop/
+      QSS3KeyPrefix: quickstart-progress-openedge/
+      DBAccessCIDR: 0.0.0.0/0
       RemoteAccessCIDR: 0.0.0.0/0
       WebserverCIDR: 0.0.0.0/0
     regions:
-    - us-west-2
+    - us-east-1
     s3_bucket: ''
     template: templates/master.template.yaml

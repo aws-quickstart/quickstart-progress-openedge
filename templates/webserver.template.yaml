@@ -8,12 +8,14 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t2.medium
+    Default: t3a.medium
     AllowedValues:
       - t2.micro
       - t2.small
       - t2.medium
       - t2.large
+      - t3a.small
+      - t3a.medium
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -100,35 +102,49 @@ Parameters:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      US1604HVM: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180405
+      AmazonLinux2AMI: Amazon Linux 2 AMI
+    af-south-1:
+      AmazonLinux2AMI: ami-0ec47ddb564d75b64
+    ap-east-1:
+      AmazonLinux2AMI: ami-49bbfa38
     ap-northeast-1:
-      US1604HVM: ami-60a4b21c
+      AmazonLinux2AMI: ami-0a1c2ec61571737db
     ap-northeast-2:
-      US1604HVM: ami-633d920d
+      AmazonLinux2AMI: ami-01af223aa7f274198
+    ap-northeast-3:
+      AmazonLinux2AMI: ami-053e733f02a27d9fc
     ap-south-1:
-      US1604HVM: ami-dba580b4
+      AmazonLinux2AMI: ami-0447a12f28fddb066
     ap-southeast-1:
-      US1604HVM: ami-82c9ecfe
+      AmazonLinux2AMI: ami-0615132a0f36d24f4
     ap-southeast-2:
-      US1604HVM: ami-2b12dc49
+      AmazonLinux2AMI: ami-088ff0e3bde7b3fdf
     ca-central-1:
-      US1604HVM: ami-9d7afcf9
+      AmazonLinux2AMI: ami-0f75c2980c6a5851d
     eu-central-1:
-      US1604HVM: ami-cd491726
+      AmazonLinux2AMI: ami-0a02ee601d742e89f
+    eu-north-1:
+      AmazonLinux2AMI: ami-04697c9bb5d6135a2
+    eu-south-1:
+      AmazonLinux2AMI: ami-0f9b9a8cf93d838d0
     eu-west-1:
-      US1604HVM: ami-74e6b80d
+      AmazonLinux2AMI: ami-0ea3405d2d2522162
     eu-west-2:
-      US1604HVM: ami-506e8f37
+      AmazonLinux2AMI: ami-032598fcc7e9d1c7a
+    eu-west-3:
+      AmazonLinux2AMI: ami-01c72e187b357583b
+    me-south-1:
+      AmazonLinux2AMI: ami-01b31491b74045c0c
     sa-east-1:
-      US1604HVM: ami-5782d43b
+      AmazonLinux2AMI: ami-0477a95397a9154b3
     us-east-1:
-      US1604HVM: ami-6dfe5010
+      AmazonLinux2AMI: ami-09d95fab7fff3776c
     us-east-2:
-      US1604HVM: ami-e82a1a8d
+      AmazonLinux2AMI: ami-026dea5602e368e96
     us-west-1:
-      US1604HVM: ami-493f2f29
+      AmazonLinux2AMI: ami-04e59c05167ea7bd5
     us-west-2:
-      US1604HVM: ami-ca89eeb2
+      AmazonLinux2AMI: ami-0e34e7b9ca0ace12d
 Conditions:
   GovCloudCondition: !Equals 
     - !Ref 'AWS::Region'
@@ -144,8 +160,8 @@ Resources:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
       VPCZoneIdentifier:
-        - !Ref PublicSubnet1ID
-        - !Ref PublicSubnet2ID
+        - !Ref PrivateSubnet1ID
+        - !Ref PrivateSubnet2ID
       LaunchConfigurationName: !Ref WebServerLaunchConfig
       MinSize: '2'
       MaxSize: '8'
@@ -174,26 +190,27 @@ Resources:
         WaitOnResourceSignals: true
   WebServerLaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
-    Metadata:
-      'AWS::CloudFormation::Init':
-        configSets:
-          webserver_install:
-            - config-webserver
-            - run_service-webserver
-        config-webserver:
-          packages:
-            apt:
-              nginx: []
-        run_service-webserver:
-          commands:
-            start_weberver:
-              command: /etc/init.d/nginx start
+#    Metadata:
+#      'AWS::CloudFormation::Init':
+#        configSets:
+#          webserver_install:
+#            - config-webserver
+#            - run_service-webserver
+#        config-webserver:
+#          packages:
+#            yum:
+#              nginx: []
+#        run_service-webserver:
+#          commands:
+#            start_weberver:
+#              command: /etc/init.d/nginx start
     Properties:
       KeyName: !Ref KeyPairName
+#      ImageId: ami-09d95fab7fff3776c
       ImageId: !FindInMap 
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
-        - US1604HVM
+        - AmazonLinux2AMI
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref WebServerSecurityGroup
@@ -202,54 +219,19 @@ Resources:
           - >
             #!/bin/bash -x
 
-            #CFN Functions
+            #cfn-init -v --stack ${AWS::StackName} --resource
+            #WebServerLaunchConfig --configsets webserver_install
+            #--region ${AWS::Region} || cfn_fail
 
-            function cfn_fail
+            amazon-linux-extras install nginx1 -y
 
-            {
+            systemctl enable nginx 
 
-            cfn-signal -e 1 --stack ${AWS::StackName} --region ${AWS::Region}
-            --resource WebServerGroup
+            systemctl start nginx 
 
-            exit 1
+            mkdir -p /var/www/
 
-            }
-
-            function cfn_success
-
-            {
-
-            cfn-signal -e 0 --stack ${AWS::StackName} --region ${AWS::Region}
-            --resource WebServerGroup
-
-            exit 0
-
-            }
-
-            S3URI=https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}
-
-            echo \'[Cloning: Load QuickStart Common Utils]\'
-
-            #Once Repo is public (Use quickstart-linux-utilities submodue)
-
-            git clone
-            https://github.com/aws-quickstart/quickstart-linux-utilities.git
-
-            source /quickstart-linux-utilities/quickstart-cfn-tools.source
-
-            echo \'[Loaded: Load QuickStart Common Utils]\'
-
-            echo \'[Update Operating System]\'
-
-            qs_update-os || qs_err
-
-            qs_bootstrap_pip || qs_err
-
-            qs_aws-cfn-bootstrap || qs_err
-
-            cfn-init -v --stack ${AWS::StackName} --resource
-            WebServerLaunchConfig --configsets webserver_install
-            --region ${AWS::Region} || cfn_fail
+            ln -s /usr/share/nginx/html/ /var/www/html
 
             # Install WebUI
 
@@ -269,7 +251,11 @@ Resources:
 
             # Signal cfn-init (final check)
 
-            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
+            # /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebServerLaunchConfig --configsets webserver_install --region ${AWS::Region}
+
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
+
+            #[ $(qs_status) == 0 ] && cfn_success || cfn_fail
           - S3Region: !If 
               - GovCloudCondition
               - s3-us-gov-west-1

@@ -9,6 +9,7 @@ Metadata:
         Parameters:
           - AvailabilityZones
           - KeyPairName
+          - DBAccessCIDR
           - RemoteAccessCIDR
           - WebserverCIDR
           - EmailAddress
@@ -44,15 +45,15 @@ Parameters:
   DBDeployPackage:
     Description: URL to package to deploy databases into database EC2 instances
     Type: String
-    Default: https://s3.amazonaws.com/mypublicfiles1/app.tar.gz
+    Default: https://s3.amazonaws.com/mypublicfiles1/db.tar.gz
   PASOEDeployPackage:
     Description: URL to package to deploy databases into PASOE EC2 instances
     Type: String
-    Default: https://s3.amazonaws.com/mypublicfiles1/app.tar.gz
+    Default: https://s3.amazonaws.com/mypublicfiles1/pas.tar.gz
   WebDeployPackage:
     Description: URL to package to deploy Web UI into WebServer EC2 instances
     Type: String
-    Default: https://s3.amazonaws.com/mypublicfiles1/app.tar.gz
+    Default: https://s3.amazonaws.com/mypublicfiles1/web.tar.gz
   PortNumber:
     Description: Port number to use to connect to the database broker process
     Type: Number
@@ -82,6 +83,8 @@ Parameters:
       - t2.small
       - t2.medium
       - t2.large
+      - t3a.small
+      - t3a.medium
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -178,6 +181,11 @@ Parameters:
     Default: quickstart-progress-openedge/
     Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Type: String
+  DBAccessCIDR:
+    AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
+    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
+    Description: "Allowed CIDR block for external SSH access"
+    Type: String
   RemoteAccessCIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
     ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
@@ -235,176 +243,174 @@ Resources:
           Fn::GetAtt:
             - VPCStack
             - Outputs.VPCID
-#   DatabaseStack:
-#     Type: AWS::CloudFormation::Stack
-#     Properties:
-#       TemplateURL:
-#         Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/openedge-database.template.yaml
-#       Parameters:
-#         EmailAddress:
-#           Ref: EmailAddress
-#         InstanceType:
-#           Ref: InstanceType
-#         KeyPairName:
-#           Ref: KeyPairName
-#         PrivateSubnet1ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PrivateSubnet1AID
-#         PrivateSubnet2ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PrivateSubnet2AID
-#         PublicSubnet1ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PublicSubnet1ID
-#         PublicSubnet2ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PublicSubnet2ID
-#         QSS3BucketName:
-#           Ref: QSS3BucketName
-#         QSS3KeyPrefix:
-#           Ref: QSS3KeyPrefix
-#         RemoteAccessCIDR:
-#           Ref: RemoteAccessCIDR
-#         WebserverCIDR:
-#           Ref: WebserverCIDR
-#         VPCID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.VPCID
-#         VPCCIDR:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.VPCCIDR
-#         PortNumber:
-#           Ref: PortNumber
-#         MinPort:
-#           Ref: MinPort
-#         MaxPort:
-#           Ref: MaxPort
-#         DBDeployPackage:
-#           Ref: DBDeployPackage
-#   PASOEStack:
-#     Type: AWS::CloudFormation::Stack
-#     Properties:
-#       TemplateURL:
-#         Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/openedge-pasoe.template.yaml
-#       Parameters:
-#         EmailAddress:
-#           Ref: EmailAddress
-#         InstanceType:
-#           Ref: InstanceType
-#         KeyPairName:
-#           Ref: KeyPairName
-#         PrivateSubnet1ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PrivateSubnet1AID
-#         PrivateSubnet2ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PrivateSubnet2AID
-#         PublicSubnet1ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PublicSubnet1ID
-#         PublicSubnet2ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PublicSubnet2ID
-#         QSS3BucketName:
-#           Ref: QSS3BucketName
-#         QSS3KeyPrefix:
-#           Ref: QSS3KeyPrefix
-#         RemoteAccessCIDR:
-#           Ref: RemoteAccessCIDR
-#         WebserverCIDR:
-#           Ref: WebserverCIDR
-#         VPCID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.VPCID
-#         VPCCIDR:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.VPCCIDR
-#         DBHostName:
-#           Fn::GetAtt:
-#             - DatabaseStack
-#             - Outputs.DBHostName
-#         DBHostName1:
-#           Fn::GetAtt:
-#             - DatabaseStack
-#             - Outputs.DBHostName1
-#         DBHostName2:
-#           Fn::GetAtt:
-#             - DatabaseStack
-#             - Outputs.DBHostName2
-#         PASOEDeployPackage:
-#           Ref: PASOEDeployPackage
-#   WebServerStack:
-#     Type: AWS::CloudFormation::Stack
-#     Properties:
-#       TemplateURL:
-#         Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/webserver.template.yaml
-#       Parameters:
-#         EmailAddress:
-#           Ref: EmailAddress
-#         InstanceType:
-#           Ref: InstanceType
-#         KeyPairName:
-#           Ref: KeyPairName
-#         PrivateSubnet1ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PrivateSubnet1AID
-#         PrivateSubnet2ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PrivateSubnet2AID
-#         PublicSubnet1ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PublicSubnet1ID
-#         PublicSubnet2ID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.PublicSubnet2ID
-#         QSS3BucketName:
-#           Ref: QSS3BucketName
-#         QSS3KeyPrefix:
-#           Ref: QSS3KeyPrefix
-#         RemoteAccessCIDR:
-#           Ref: RemoteAccessCIDR
-#         WebserverCIDR:
-#           Ref: WebserverCIDR
-#         VPCID:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.VPCID
-#         VPCCIDR:
-#           Fn::GetAtt:
-#             - VPCStack
-#             - Outputs.VPCCIDR
-#         PASOEURL:
-#           Fn::GetAtt:
-#             - PASOEStack
-#             - Outputs.URL
-#         WebDeployPackage:
-#           Ref: WebDeployPackage
-# Outputs:
-#   WebURL:
-#     Description: "The web server URL"
-#     Value:
-#       Fn::GetAtt:
-#         - WebServerStack
-#         - Outputs.URL
-#   PASOEURL:
-#     Description: "The PASOE URL"
-#     Value:
-#       Fn::GetAtt:
-#         - PASOEStack
-#         - Outputs.URL
+  DatabaseStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/openedge-database.template.yaml
+      Parameters:
+        EmailAddress:
+          Ref: EmailAddress
+        InstanceType:
+          Ref: InstanceType
+        KeyPairName:
+          Ref: KeyPairName
+        PrivateSubnet1ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PrivateSubnet1AID
+        PrivateSubnet2ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PrivateSubnet2AID
+        PublicSubnet1ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PublicSubnet1ID
+        PublicSubnet2ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PublicSubnet2ID
+        QSS3BucketName:
+          Ref: QSS3BucketName
+        QSS3KeyPrefix:
+          Ref: QSS3KeyPrefix
+        DBAccessCIDR:
+          Ref: DBAccessCIDR
+        VPCID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.VPCID
+        VPCCIDR:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.VPCCIDR
+        PortNumber:
+          Ref: PortNumber
+        MinPort:
+          Ref: MinPort
+        MaxPort:
+          Ref: MaxPort
+        DBDeployPackage:
+          Ref: DBDeployPackage
+  PASOEStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/openedge-pasoe.template.yaml
+      Parameters:
+        EmailAddress:
+          Ref: EmailAddress
+        InstanceType:
+          Ref: InstanceType
+        KeyPairName:
+          Ref: KeyPairName
+        PrivateSubnet1ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PrivateSubnet1AID
+        PrivateSubnet2ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PrivateSubnet2AID
+        PublicSubnet1ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PublicSubnet1ID
+        PublicSubnet2ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PublicSubnet2ID
+        QSS3BucketName:
+          Ref: QSS3BucketName
+        QSS3KeyPrefix:
+          Ref: QSS3KeyPrefix
+        RemoteAccessCIDR:
+          Ref: RemoteAccessCIDR
+        WebserverCIDR:
+          Ref: WebserverCIDR
+        VPCID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.VPCID
+        VPCCIDR:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.VPCCIDR
+        DBHostName:
+          Fn::GetAtt:
+            - DatabaseStack
+            - Outputs.DBHostName
+        DBHostName1:
+          Fn::GetAtt:
+            - DatabaseStack
+            - Outputs.DBHostName1
+        DBHostName2:
+          Fn::GetAtt:
+            - DatabaseStack
+            - Outputs.DBHostName2
+        PASOEDeployPackage:
+          Ref: PASOEDeployPackage
+  WebServerStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/webserver.template.yaml
+      Parameters:
+        EmailAddress:
+          Ref: EmailAddress
+        InstanceType:
+          Ref: InstanceType
+        KeyPairName:
+          Ref: KeyPairName
+        PrivateSubnet1ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PrivateSubnet1AID
+        PrivateSubnet2ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PrivateSubnet2AID
+        PublicSubnet1ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PublicSubnet1ID
+        PublicSubnet2ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PublicSubnet2ID
+        QSS3BucketName:
+          Ref: QSS3BucketName
+        QSS3KeyPrefix:
+          Ref: QSS3KeyPrefix
+        RemoteAccessCIDR:
+          Ref: RemoteAccessCIDR
+        WebserverCIDR:
+          Ref: WebserverCIDR
+        VPCID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.VPCID
+        VPCCIDR:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.VPCCIDR
+        PASOEURL:
+          Fn::GetAtt:
+            - PASOEStack
+            - Outputs.URL
+        WebDeployPackage:
+          Ref: WebDeployPackage
+Outputs:
+  WebURL:
+    Description: "The web server URL"
+    Value:
+      Fn::GetAtt:
+        - WebServerStack
+        - Outputs.URL
+  PASOEURL:
+    Description: "The PASOE URL"
+    Value:
+      Fn::GetAtt:
+        - PASOEStack
+        - Outputs.URL

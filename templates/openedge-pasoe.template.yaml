@@ -8,12 +8,13 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t2.small
+    Default: t3a.small
     AllowedValues:
       - t2.micro
       - t2.small
       - t2.medium
       - t2.large
+      - t3a.small
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -106,35 +107,49 @@ Parameters:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      US1604HVM: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180405
+      PASOEAMZNLINUX2: Amazon Linux 2 AMI with PAS for OpenEdge
+    af-south-1:
+      PASOEAMZNLINUX2: ami-0ea122635924978c0
+    ap-east-1:
+      PASOEAMZNLINUX2: ami-06ac67cc7637b9e50
     ap-northeast-1:
-      US1604HVM: ami-60a4b21c
+      PASOEAMZNLINUX2: ami-09f769a3e6c95a641
     ap-northeast-2:
-      US1604HVM: ami-633d920d
+      PASOEAMZNLINUX2: ami-07112fc814adbb484
+    ap-northeast-3:
+      PASOEAMZNLINUX2: ami-0c8ff26e49b608b64
     ap-south-1:
-      US1604HVM: ami-dba580b4
+      PASOEAMZNLINUX2: ami-010e0cdc17aac0c62
     ap-southeast-1:
-      US1604HVM: ami-82c9ecfe
+      PASOEAMZNLINUX2: ami-0461ac5bfe6c2bb3b
     ap-southeast-2:
-      US1604HVM: ami-2b12dc49
+      PASOEAMZNLINUX2: ami-07d619bb2d35e1941
     ca-central-1:
-      US1604HVM: ami-9d7afcf9
+      PASOEAMZNLINUX2: ami-0e48a91a531305c17
     eu-central-1:
-      US1604HVM: ami-cd491726
+      PASOEAMZNLINUX2: ami-00f2f26f5212e4790
+    eu-north-1:
+      PASOEAMZNLINUX2: ami-0b146ea1e44c356f9
+    eu-south-1:
+      PASOEAMZNLINUX2: ami-0104627b5f3b6042e
     eu-west-1:
-      US1604HVM: ami-74e6b80d
+      PASOEAMZNLINUX2: ami-01fb0eb0b78795a05
     eu-west-2:
-      US1604HVM: ami-506e8f37
+      PASOEAMZNLINUX2: ami-0992605119c32062c
+    eu-west-3:
+      PASOEAMZNLINUX2: ami-0d2f60f662582e252
+    me-south-1:
+      PASOEAMZNLINUX2: ami-0a058cc63da7db45b
     sa-east-1:
-      US1604HVM: ami-5782d43b
+      PASOEAMZNLINUX2: ami-0c4cda3f8934cf9cc
     us-east-1:
-      US1604HVM: ami-6dfe5010
+      PASOEAMZNLINUX2: ami-0889b81877c178bac
     us-east-2:
-      US1604HVM: ami-e82a1a8d
+      PASOEAMZNLINUX2: ami-038b2f23053b3a462
     us-west-1:
-      US1604HVM: ami-493f2f29
+      PASOEAMZNLINUX2: ami-02898a71d0d57337f
     us-west-2:
-      US1604HVM: ami-ca89eeb2
+      PASOEAMZNLINUX2: ami-097e290f0ee541123
 Conditions:
   GovCloudCondition: !Equals 
     - !Ref 'AWS::Region'
@@ -146,13 +161,13 @@ Resources:
       Subscription:
         - Endpoint: !Ref EmailAddress
           Protocol: email
-  WebServerGroup:
+  PASOEGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
       VPCZoneIdentifier:
-        - !Ref PublicSubnet1ID
-        - !Ref PublicSubnet2ID
-      LaunchConfigurationName: !Ref WebServerLaunchConfig
+        - !Ref PrivateSubnet1ID
+        - !Ref PrivateSubnet2ID
+      LaunchConfigurationName: !Ref PASOELaunchConfig
       MinSize: '2'
       MaxSize: '8'
       TargetGroupARNs:
@@ -178,86 +193,21 @@ Resources:
         MaxBatchSize: 1
         PauseTime: PT15M
         WaitOnResourceSignals: true
-  WebServerLaunchConfig:
+  PASOELaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
-    Metadata:
-      'AWS::CloudFormation::Init':
-        configSets:
-          webserver_install:
-            - config-webserver
-            - run_service-webserver
-        config-webserver:
-          packages:
-            apt:
-              nginx: []
-        run_service-webserver:
-          commands:
-            start_weberver:
-              command: /etc/init.d/nginx start
     Properties:
       KeyName: !Ref KeyPairName
-#      ImageId: ami-01eb401767b1bea24
-      ImageId: ami-0905f7eaeca3cd35f
-#      ImageId: !FindInMap 
-#        - AWSAMIRegionMap
-#        - !Ref 'AWS::Region'
-#        - US1604HVM
+      ImageId: !FindInMap 
+        - AWSAMIRegionMap
+        - !Ref 'AWS::Region'
+        - PASOEAMZNLINUX2
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref PASOESecurityGroup
-      UserData: !Base64 
+      UserData: !Base64
         'Fn::Sub':
           - >
             #!/bin/bash -x
-
-            #CFN Functions
-
-            function cfn_fail
-
-            {
-
-            cfn-signal -e 1 --stack ${AWS::StackName} --region ${AWS::Region}
-            --resource WebServerGroup
-
-            exit 1
-
-            }
-
-            function cfn_success
-
-            {
-
-            cfn-signal -e 0 --stack ${AWS::StackName} --region ${AWS::Region}
-            --resource WebServerGroup
-
-            exit 0
-
-            }
-
-            S3URI=https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}
-
-            echo \'[Cloning: Load QuickStart Common Utils]\'
-
-            #Once Repo is public (Use quickstart-linux-utilities submodue)
-
-            git clone
-            https://github.com/aws-quickstart/quickstart-linux-utilities.git
-
-            source /quickstart-linux-utilities/quickstart-cfn-tools.source
-
-            echo \'[Loaded: Load QuickStart Common Utils]\'
-
-            echo \'[Update Operating System]\'
-
-            qs_update-os || qs_err
-
-            qs_bootstrap_pip || qs_err
-
-            qs_aws-cfn-bootstrap || qs_err
-
-            cfn-init -v --stack ${AWS::StackName} --resource
-            WebServerLaunchConfig --configsets webserver_install
-            --region ${AWS::Region} || cfn_fail
 
             # Install PASOE app
 
@@ -283,27 +233,34 @@ Resources:
 
             echo ${DBHostName} >> /tmp/output.txt
 
+
+            echo ${DBHostName} >> /tmp/output.txt
+
             /install/app/deploy.sh
 
             # Signal cfn-init (final check)
 
-            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
-          - S3Region: !If 
+            #/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource PASOELaunchConfig --region ${AWS::Region}
+
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource PASOEGroup --region ${AWS::Region}
+
+            #            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
+          - S3Region: !If
               - GovCloudCondition
               - s3-us-gov-west-1
               - s3
-  WebServerScaleUpPolicy:
+  PASOEScaleUpPolicy:
     Type: 'AWS::AutoScaling::ScalingPolicy'
     Properties:
       AdjustmentType: ChangeInCapacity
-      AutoScalingGroupName: !Ref WebServerGroup
+      AutoScalingGroupName: !Ref PASOEGroup
       Cooldown: '60'
       ScalingAdjustment: 1
-  WebServerScaleDownPolicy:
+  PASOEScaleDownPolicy:
     Type: 'AWS::AutoScaling::ScalingPolicy'
     Properties:
       AdjustmentType: ChangeInCapacity
-      AutoScalingGroupName: !Ref WebServerGroup
+      AutoScalingGroupName: !Ref PASOEGroup
       Cooldown: '60'
       ScalingAdjustment: -1
   WebServerCPUAlarmHigh:
@@ -317,10 +274,10 @@ Resources:
       EvaluationPeriods: 2
       Threshold: 90
       AlarmActions:
-        - !Ref WebServerScaleUpPolicy
+        - !Ref PASOEScaleUpPolicy
       Dimensions:
         - Name: AutoScalingGroupName
-          Value: !Ref WebServerGroup
+          Value: !Ref PASOEGroup
       ComparisonOperator: GreaterThanThreshold
   WebServerCPUAlarmLow:
     Type: 'AWS::CloudWatch::Alarm'
@@ -333,10 +290,10 @@ Resources:
       EvaluationPeriods: 2
       Threshold: 70
       AlarmActions:
-        - !Ref WebServerScaleDownPolicy
+        - !Ref PASOEScaleDownPolicy
       Dimensions:
         - Name: AutoScalingGroupName
-          Value: !Ref WebServerGroup
+          Value: !Ref PASOEGroup
       ComparisonOperator: LessThanThreshold
   ApplicationLoadBalancer:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
