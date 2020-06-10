@@ -102,35 +102,49 @@ Parameters:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      US1604HVM: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180405
+      AmazonLinux2AMI: Amazon Linux 2 AMI
+    af-south-1:
+      AmazonLinux2AMI: ami-0ec47ddb564d75b64
+    ap-east-1:
+      AmazonLinux2AMI: ami-49bbfa38
     ap-northeast-1:
-      US1604HVM: ami-60a4b21c
+      AmazonLinux2AMI: ami-0a1c2ec61571737db
     ap-northeast-2:
-      US1604HVM: ami-633d920d
+      AmazonLinux2AMI: ami-01af223aa7f274198
+    ap-northeast-3:
+      AmazonLinux2AMI: ami-053e733f02a27d9fc
     ap-south-1:
-      US1604HVM: ami-dba580b4
+      AmazonLinux2AMI: ami-0447a12f28fddb066
     ap-southeast-1:
-      US1604HVM: ami-82c9ecfe
+      AmazonLinux2AMI: ami-0615132a0f36d24f4
     ap-southeast-2:
-      US1604HVM: ami-2b12dc49
+      AmazonLinux2AMI: ami-088ff0e3bde7b3fdf
     ca-central-1:
-      US1604HVM: ami-9d7afcf9
+      AmazonLinux2AMI: ami-0f75c2980c6a5851d
     eu-central-1:
-      US1604HVM: ami-cd491726
+      AmazonLinux2AMI: ami-0a02ee601d742e89f
+    eu-north-1:
+      AmazonLinux2AMI: ami-04697c9bb5d6135a2
+    eu-south-1:
+      AmazonLinux2AMI: ami-0f9b9a8cf93d838d0
     eu-west-1:
-      US1604HVM: ami-74e6b80d
+      AmazonLinux2AMI: ami-0ea3405d2d2522162
     eu-west-2:
-      US1604HVM: ami-506e8f37
+      AmazonLinux2AMI: ami-032598fcc7e9d1c7a
+    eu-west-3:
+      AmazonLinux2AMI: ami-01c72e187b357583b
+    me-south-1:
+      AmazonLinux2AMI: ami-01b31491b74045c0c
     sa-east-1:
-      US1604HVM: ami-5782d43b
+      AmazonLinux2AMI: ami-0477a95397a9154b3
     us-east-1:
-      US1604HVM: ami-6dfe5010
+      AmazonLinux2AMI: ami-09d95fab7fff3776c
     us-east-2:
-      US1604HVM: ami-e82a1a8d
+      AmazonLinux2AMI: ami-026dea5602e368e96
     us-west-1:
-      US1604HVM: ami-493f2f29
+      AmazonLinux2AMI: ami-04e59c05167ea7bd5
     us-west-2:
-      US1604HVM: ami-ca89eeb2
+      AmazonLinux2AMI: ami-0e34e7b9ca0ace12d
 Conditions:
   GovCloudCondition: !Equals 
     - !Ref 'AWS::Region'
@@ -192,11 +206,11 @@ Resources:
 #              command: /etc/init.d/nginx start
     Properties:
       KeyName: !Ref KeyPairName
-      ImageId: ami-09d95fab7fff3776c
-#      ImageId: !FindInMap 
-#        - AWSAMIRegionMap
-#        - !Ref 'AWS::Region'
-#        - US1604HVM
+#      ImageId: ami-09d95fab7fff3776c
+      ImageId: !FindInMap 
+        - AWSAMIRegionMap
+        - !Ref 'AWS::Region'
+        - AmazonLinux2AMI
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref WebServerSecurityGroup

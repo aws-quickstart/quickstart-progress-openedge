@@ -105,34 +105,48 @@ Mappings:
   AWSAMIRegionMap:
     AMI:
       OEDBAMZNLINUX2: Amazon Linux 2 AMI with OpenEdge Database
+    af-south-1:
+      OEDBAMZNLINUX2: ami-00dc324c8766afe1b
+    ap-east-1:
+      OEDBAMZNLINUX2: ami-09414be2d4cadc9e9
     ap-northeast-1:
-      TBD: ami-60a4b21c
+      OEDBAMZNLINUX2: ami-00a6c946a9a5fb24e
     ap-northeast-2:
-      TBD: ami-633d920d
+      OEDBAMZNLINUX2: ami-00b61f9656a9d14c5
+    ap-northeast-3:
+      OEDBAMZNLINUX2: ami-0c135828258add32d
     ap-south-1:
-      TBD: ami-dba580b4
+      OEDBAMZNLINUX2: ami-0659415b476ddf64f
     ap-southeast-1:
-      TBD: ami-82c9ecfe
+      OEDBAMZNLINUX2: ami-0f207936a9a77fcf6
     ap-southeast-2:
-      TBD: ami-2b12dc49
+      OEDBAMZNLINUX2: ami-02c676fde9722db00
     ca-central-1:
-      TBD: ami-9d7afcf9
+      OEDBAMZNLINUX2: ami-0e21f4d83df760a8e
     eu-central-1:
-      TBD: ami-cd491726
+      OEDBAMZNLINUX2: ami-08bd55492e256494b
+    eu-north-1:
+      OEDBAMZNLINUX2: ami-0847c77194ef249f8
+    eu-south-1:
+      OEDBAMZNLINUX2: ami-09998f56c80406c72
     eu-west-1:
-      TBD: ami-74e6b80d
+      OEDBAMZNLINUX2: ami-067d6140825aac648
     eu-west-2:
-      TBD: ami-506e8f37
+      OEDBAMZNLINUX2: ami-0dd3f3ca619f7f608
+    eu-west-3:
+      OEDBAMZNLINUX2: ami-0bf82e1ed7f8db79c
+    me-south-1:
+      OEDBAMZNLINUX2: ami-0447f0da1e40bfdf8
     sa-east-1:
-      TBD: ami-0169fb0462e7b26e3
+      OEDBAMZNLINUX2: ami-05578b3ca265228e3
     us-east-1:
-      OEDBAMZNLINUX2: ami-0e5870d5eb42220d8
+      OEDBAMZNLINUX2: ami-0169fb0462e7b26e3
     us-east-2:
-      TBD: ami-e82a1a8d
+      OEDBAMZNLINUX2: ami-052ef4d57fed132aa
     us-west-1:
-      TBD: ami-493f2f29
+      OEDBAMZNLINUX2: ami-017e8f595e2f4d3c3
     us-west-2:
-      TBD: ami-ca89eeb2
+      OEDBAMZNLINUX2: ami-0d00cfc095d9bbed9
 Conditions:
   GovCloudCondition: !Equals
     - !Ref "AWS::Region"

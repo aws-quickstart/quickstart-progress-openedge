@@ -108,34 +108,48 @@ Mappings:
   AWSAMIRegionMap:
     AMI:
       PASOEAMZNLINUX2: Amazon Linux 2 AMI with PAS for OpenEdge
+    af-south-1:
+      PASOEAMZNLINUX2: ami-0ea122635924978c0
+    ap-east-1:
+      PASOEAMZNLINUX2: ami-06ac67cc7637b9e50
     ap-northeast-1:
-      TBD: ami-60a4b21c
+      PASOEAMZNLINUX2: ami-09f769a3e6c95a641
     ap-northeast-2:
-      TBD: ami-633d920d
+      PASOEAMZNLINUX2: ami-07112fc814adbb484
+    ap-northeast-3:
+      PASOEAMZNLINUX2: ami-0c8ff26e49b608b64
     ap-south-1:
-      TBD: ami-dba580b4
+      PASOEAMZNLINUX2: ami-010e0cdc17aac0c62
     ap-southeast-1:
-      TBD: ami-82c9ecfe
+      PASOEAMZNLINUX2: ami-0461ac5bfe6c2bb3b
     ap-southeast-2:
-      TBD: ami-2b12dc49
+      PASOEAMZNLINUX2: ami-07d619bb2d35e1941
     ca-central-1:
-      TBD: ami-9d7afcf9
+      PASOEAMZNLINUX2: ami-0e48a91a531305c17
     eu-central-1:
-      TBD: ami-cd491726
+      PASOEAMZNLINUX2: ami-00f2f26f5212e4790
+    eu-north-1:
+      PASOEAMZNLINUX2: ami-0b146ea1e44c356f9
+    eu-south-1:
+      PASOEAMZNLINUX2: ami-0104627b5f3b6042e
     eu-west-1:
-      TBD: ami-74e6b80d
+      PASOEAMZNLINUX2: ami-01fb0eb0b78795a05
     eu-west-2:
-      TBD: ami-506e8f37
+      PASOEAMZNLINUX2: ami-0992605119c32062c
+    eu-west-3:
+      PASOEAMZNLINUX2: ami-0d2f60f662582e252
+    me-south-1:
+      PASOEAMZNLINUX2: ami-0a058cc63da7db45b
     sa-east-1:
-      TBD: ami-0169fb0462e7b26e3
+      PASOEAMZNLINUX2: ami-0c4cda3f8934cf9cc
     us-east-1:
-      PASOEAMZNLINUX2: ami-0b689f27fab75c217
+      PASOEAMZNLINUX2: ami-0889b81877c178bac
     us-east-2:
-      TBD: ami-e82a1a8d
+      PASOEAMZNLINUX2: ami-038b2f23053b3a462
     us-west-1:
-      TBD: ami-493f2f29
+      PASOEAMZNLINUX2: ami-02898a71d0d57337f
     us-west-2:
-      TBD: ami-ca89eeb2
+      PASOEAMZNLINUX2: ami-097e290f0ee541123
 Conditions:
   GovCloudCondition: !Equals 
     - !Ref 'AWS::Region'
