@@ -40,7 +40,55 @@ Metadata:
           default: AWS Quick Start Configuration
         Parameters:
           - QSS3BucketName
+          - QSS3BucketRegion
           - QSS3KeyPrefix
+    ParameterLabels:
+      AvailabilityZones:
+        default: Availability zones
+      KeyPairName:
+        default: EC2 key pair name
+      DBAccessCIDR:
+        default: DB access CIDR
+      RemoteAccessCIDR:
+        default: Remote access CIDR
+      WebserverCIDR:
+        default: Web access CIDR
+      EmailAddress:
+        default: Email address
+      DBDeployPackage:
+        default: DB deploy package
+      PASOEDeployPackage:
+        default: PASOE deploy package
+      WebDeployPackage:
+        default: Web deploy package
+      PortNumber:
+        default: Port number
+      MinPort: Min port
+        default:
+      MaxPort:
+        default: Max port
+      PrivateSubnet1CIDR:
+        default: Private subnet 1 CIDR
+      PrivateSubnet2CIDR:
+        default: Private subnet 2 CIDR
+      PublicSubnet1CIDR:
+        default: Public subnet 1 CIDR
+      PublicSubnet2CIDR:
+        default: Public subnet 2 CIDR
+      VPCCIDR:
+        default: VPC CIDR
+      BastionAMIOS:
+        default: Bastion AMI OS
+      BastionInstanceType:
+        default: Bastion instance type
+      InstanceType:
+        default: Instance type
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      QSS3BucketRegion:
+        default: Quick Start S3 bucket region
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
 Parameters:
   DBDeployPackage:
     Description: URL to package to deploy databases into database EC2 instances
@@ -170,14 +218,16 @@ Parameters:
   QSS3BucketName:
     AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
     ConstraintDescription: "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
-    #    Default: aws-quickstart
-    Default: openedge-aws-beta
+    Default: aws-quickstart
     Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
     Type: String
   QSS3KeyPrefix:
     AllowedPattern: "^[0-9a-zA-Z-/]*$"
     ConstraintDescription: "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
-    #    Default: implementing/
     Default: quickstart-progress-openedge/
     Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Type: String
