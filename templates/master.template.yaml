@@ -5,10 +5,12 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: Quick Start Parameters
+          default: AWS VPC Parameters
         Parameters:
           - AvailabilityZones
-          - KeyPairName
+      - Label:
+          default: OpenEdge Parameters
+        Parameters:
           - DBAccessCIDR
           - RemoteAccessCIDR
           - WebserverCIDR
@@ -33,6 +35,7 @@ Metadata:
       - Label:
           default: Amazon EC2 Configuration
         Parameters:
+          - KeyPairName
           - BastionAMIOS
           - BastionInstanceType
           - InstanceType
@@ -63,8 +66,8 @@ Metadata:
         default: Web deploy package
       PortNumber:
         default: Port number
-      MinPort: Min port
-        default:
+      MinPort: 
+        default: Min port
       MaxPort:
         default: Max port
       PrivateSubnet1CIDR:
