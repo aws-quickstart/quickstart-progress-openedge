@@ -11,9 +11,8 @@ Metadata:
       - Label:
           default: OpenEdge Parameters
         Parameters:
-          - DBAccessCIDR
           - RemoteAccessCIDR
-          - WebserverCIDR
+          - WebAccessCIDR
           - EmailAddress
           - DBDeployPackage
           - PASOEDeployPackage
@@ -50,11 +49,9 @@ Metadata:
         default: Availability zones
       KeyPairName:
         default: EC2 key pair name
-      DBAccessCIDR:
-        default: DB access CIDR
       RemoteAccessCIDR:
         default: Remote access CIDR
-      WebserverCIDR:
+      WebAccessCIDR:
         default: Web access CIDR
       EmailAddress:
         default: Email address
@@ -234,20 +231,15 @@ Parameters:
     Default: quickstart-progress-openedge/
     Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Type: String
-  DBAccessCIDR:
-    AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
-    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
-    Description: "Allowed CIDR block for external SSH access"
-    Type: String
   RemoteAccessCIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
     ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
     Description: "Allowed CIDR block for external SSH access"
     Type: String
-  WebserverCIDR:
+  WebAccessCIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
     ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
-    Description: "Allowed CIDR block for  webserver access"
+    Description: "Allowed CIDR block for web access"
     Type: String
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
@@ -329,24 +321,10 @@ Resources:
           Fn::GetAtt:
             - VPCStack
             - Outputs.PrivateSubnet2AID
-        PublicSubnet1ID:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.PublicSubnet1ID
-        PublicSubnet2ID:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.PublicSubnet2ID
-        DBAccessCIDR:
-          Ref: DBAccessCIDR
         VPCID:
           Fn::GetAtt:
             - VPCStack
             - Outputs.VPCID
-        VPCCIDR:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.VPCCIDR
         PortNumber:
           Ref: PortNumber
         MinPort:
@@ -388,8 +366,8 @@ Resources:
             - Outputs.PublicSubnet2ID
         RemoteAccessCIDR:
           Ref: RemoteAccessCIDR
-        WebserverCIDR:
-          Ref: WebserverCIDR
+        WebAccessCIDR:
+          Ref: WebAccessCIDR
         VPCID:
           Fn::GetAtt:
             - VPCStack
@@ -445,8 +423,8 @@ Resources:
             - Outputs.PublicSubnet2ID
         RemoteAccessCIDR:
           Ref: RemoteAccessCIDR
-        WebserverCIDR:
-          Ref: WebserverCIDR
+        WebAccessCIDR:
+          Ref: WebAccessCIDR
         VPCID:
           Fn::GetAtt:
             - VPCStack
