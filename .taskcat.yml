@@ -20,9 +20,8 @@ tests:
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
       QSS3KeyPrefix: quickstart-progress-openedge/
-      DBAccessCIDR: 0.0.0.0/0
       RemoteAccessCIDR: 0.0.0.0/0
-      WebserverCIDR: 0.0.0.0/0
+      WebAccessCIDR: 0.0.0.0/0
       DBDeployPackage: 'https://s3.amazonaws.com/mypublicfiles1/db.tar.'
       PASOEDeployPackage:  'https://s3.amazonaws.com/mypublicfiles1/pas.tar.gz'
       WebDeployPackage: 'https://s3.amazonaws.com/mypublicfiles1/web.tar.gz'
