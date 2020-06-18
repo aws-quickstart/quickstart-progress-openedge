@@ -364,18 +364,12 @@ Resources:
           Fn::GetAtt:
             - VPCStack
             - Outputs.PublicSubnet2ID
-        RemoteAccessCIDR:
-          Ref: RemoteAccessCIDR
         WebAccessCIDR:
           Ref: WebAccessCIDR
         VPCID:
           Fn::GetAtt:
             - VPCStack
             - Outputs.VPCID
-        VPCCIDR:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.VPCCIDR
         DBHostName:
           Fn::GetAtt:
             - DatabaseStack
@@ -421,18 +415,12 @@ Resources:
           Fn::GetAtt:
             - VPCStack
             - Outputs.PublicSubnet2ID
-        RemoteAccessCIDR:
-          Ref: RemoteAccessCIDR
         WebAccessCIDR:
           Ref: WebAccessCIDR
         VPCID:
           Fn::GetAtt:
             - VPCStack
             - Outputs.VPCID
-        VPCCIDR:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.VPCCIDR
         PASOEURL:
           Fn::GetAtt:
             - PASOEStack
