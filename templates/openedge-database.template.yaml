@@ -14,8 +14,16 @@ Parameters:
       - t2.small
       - t2.medium
       - t2.large
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.small
       - t3a.medium
+      - t3a.large
+      - t3a.xlarge
+      - t3a.2xlarge
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -114,23 +122,58 @@ Resources:
       Subscription:
         - Endpoint: !Ref EmailAddress
           Protocol: email
+  S3AccessRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/"     
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - 'ec2.amazonaws.com'
+          Action: sts:AssumeRole      
+  S3AccessRolePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: S3AccessRolePolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:       
+        - Effect: Allow
+          Action:
+          - s3:Get*
+          - s3:List*
+          - s3:AbortMultipartUpload       
+          Resource:
+          - '*'
+      Roles:
+        - Ref: S3AccessRole
+  S3AccessProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: /
+      Roles:
+        - !Ref S3AccessRole
   SourceReplica:
     Type: "AWS::EC2::Instance"
-    # Metadata:
-    #   "AWS::CloudFormation::Init":
-    #     config:
-    #       files:
-    #         "/install/app.tar.gz":
-    #           source: https://mypublicfiles1.s3.amazonaws.com/app.tar.gz
-    #           mode: '000755'
-    #           owner: ec2-user
-    #           group: ec2-user
-    #      'AWS::CloudFormation::Authentication':
-    #        S3AccessCreds:
-    #          type: S3
-    #          accessKeyId: !Ref AccessKey
-    #          secretKey: !Ref SecretAccessKey
+    Metadata:
+      "AWS::CloudFormation::Init":
+        config:
+          files:
+            "/install/app.tar.gz":
+              source: !Sub "${DBDeployPackage}"
+              mode: '000755'
+              owner: ec2-user
+              group: ec2-user
+              authentication: S3AccessCreds
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref S3AccessRole
     Properties:
+      IamInstanceProfile: !Ref S3AccessProfile
       ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
@@ -152,11 +195,9 @@ Resources:
 
             mkdir -p /install
 
-            wget -O /install/app.tar.gz ${DBDeployPackage}
+            export OE_ENV=db0
 
-            OE_ENV=db0
-
-            export OE_ENV
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
 
             tar xCf /install /install/app.tar.gz
 
@@ -165,21 +206,22 @@ Resources:
           - DBDeployPackage: !Ref DBDeployPackage
   TargetReplicaOne:
     Type: "AWS::EC2::Instance"
-    # Metadata:
-    #   "AWS::CloudFormation::Init":
-    #     config:
-    #       files:
-    #         "/install/app.tar.gz":
-    #           source: https://mypublicfiles1.s3.amazonaws.com/app.tar.gz
-    #           mode: '000755'
-    #           owner: ec2-user
-    #           group: ec2-user
-    #      'AWS::CloudFormation::Authentication':
-    #        S3AccessCreds:
-    #          type: S3
-    #          accessKeyId: !Ref AccessKey
-    #          secretKey: !Ref SecretAccessKey
+    Metadata:
+      "AWS::CloudFormation::Init":
+        config:
+          files:
+            "/install/app.tar.gz":
+              source: !Sub "${DBDeployPackage}"
+              mode: '000755'
+              owner: ec2-user
+              group: ec2-user
+              authentication: S3AccessCreds
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref S3AccessRole
     Properties:
+      IamInstanceProfile: !Ref S3AccessProfile
       ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
@@ -201,11 +243,11 @@ Resources:
 
             mkdir -p /install
 
-            wget -O /install/app.tar.gz ${DBDeployPackage}
-
             OE_ENV=db1
 
             export OE_ENV
+
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
 
             tar xCf /install /install/app.tar.gz
 
@@ -214,21 +256,22 @@ Resources:
           - DBDeployPackage: !Ref DBDeployPackage      
   TargetReplicaTwo:
     Type: "AWS::EC2::Instance"
-    # Metadata:
-    #   "AWS::CloudFormation::Init":
-    #     config:
-    #       files:
-    #         "/install/app.tar.gz":
-    #           source: https://mypublicfiles1.s3.amazonaws.com/app.tar.gz
-    #           mode: '000755'
-    #           owner: ec2-user
-    #           group: ec2-user
-    #      'AWS::CloudFormation::Authentication':
-    #        S3AccessCreds:
-    #          type: S3
-    #          accessKeyId: !Ref AccessKey
-    #          secretKey: !Ref SecretAccessKey
+    Metadata:
+      "AWS::CloudFormation::Init":
+        config:
+          files:
+            "/install/app.tar.gz":
+              source: !Sub "${DBDeployPackage}"
+              mode: '000755'
+              owner: ec2-user
+              group: ec2-user
+              authentication: S3AccessCreds
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref S3AccessRole
     Properties:
+      IamInstanceProfile: !Ref S3AccessProfile
       ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
@@ -250,11 +293,11 @@ Resources:
 
             mkdir -p /install
 
-            wget -O /install/app.tar.gz ${DBDeployPackage}
-
             OE_ENV=db2
 
             export OE_ENV
+
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
 
             tar xCf /install /install/app.tar.gz
 
