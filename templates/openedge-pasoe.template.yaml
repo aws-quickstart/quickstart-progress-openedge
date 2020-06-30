@@ -14,7 +14,16 @@ Parameters:
       - t2.small
       - t2.medium
       - t2.large
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.small
+      - t3a.medium
+      - t3a.large
+      - t3a.xlarge
+      - t3a.2xlarge
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -70,6 +79,12 @@ Parameters:
   DBHostName2:
     Description: IP Address of SourceReplica Instance
     Type: String
+  MinScalingInstances:
+    Description: Minimum number of EC2 instances in ASG
+    Type: String
+  MaxScalingInstances:
+    Description: Maximum number of EC2 instances in ASG
+    Type: String
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -123,6 +138,40 @@ Resources:
       Subscription:
         - Endpoint: !Ref EmailAddress
           Protocol: email
+  S3AccessRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - 'ec2.amazonaws.com'
+          Action: sts:AssumeRole
+  S3AccessRolePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: S3AccessRolePolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:Get*
+          - s3:List*
+          - s3:AbortMultipartUpload
+          Resource:
+          - '*'
+      Roles:
+        - Ref: S3AccessRole
+  S3AccessProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: /
+      Roles:
+        - !Ref S3AccessRole
   PASOEGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
@@ -130,8 +179,8 @@ Resources:
         - !Ref PrivateSubnet1ID
         - !Ref PrivateSubnet2ID
       LaunchConfigurationName: !Ref PASOELaunchConfig
-      MinSize: '2'
-      MaxSize: '8'
+      MinSize: !Ref MinScalingInstances
+      MaxSize: !Ref MaxScalingInstances
       TargetGroupARNs:
         - !Ref PASOETargetGroup
       NotificationConfigurations:
@@ -157,7 +206,22 @@ Resources:
         WaitOnResourceSignals: true
   PASOELaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
+    Metadata:
+      "AWS::CloudFormation::Init":
+        config:
+          files:
+            "/install/app.tar.gz":
+              source: !Sub "${PASOEDeployPackage}"
+              mode: '000755'
+              owner: ec2-user
+              group: ec2-user
+              authentication: S3AccessCreds
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref S3AccessRole
     Properties:
+      IamInstanceProfile: !Ref S3AccessProfile
       KeyName: !Ref KeyPairName
       ImageId: !FindInMap 
         - AWSAMIRegionMap
@@ -175,38 +239,24 @@ Resources:
 
             mkdir -p /install
 
-            wget -O /install/app.tar.gz ${PASOEDeployPackage}
+            export OE_ENV=pasoe
 
-            OE_ENV=pasoe
+            export DBHostName=${DBHostName}
 
-            DBHostName=${DBHostName}
+            export DBHostName1=${DBHostName1}
 
-            export OE_ENV DBHostName
+            export DBHostName2=${DBHostName2}
 
-            DBHostName1=${DBHostName1}
-
-            export OE_ENV DBHostName1
-
-            DBHostName2=${DBHostName2}
-
-            export OE_ENV DBHostName2
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource PASOELaunchConfig --region ${AWS::Region}
 
             tar xCf /install /install/app.tar.gz
 
-            echo ${DBHostName} >> /tmp/output.txt
-
-
-            echo ${DBHostName} >> /tmp/output.txt
-
             /install/app/deploy.sh
-
-            # Signal cfn-init (final check)
-
-            #/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource PASOELaunchConfig --region ${AWS::Region}
 
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource PASOEGroup --region ${AWS::Region}
 
             #            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
+
           - PASOEDeployPackage: !Ref PASOEDeployPackage
   PASOEScaleUpPolicy:
     Type: 'AWS::AutoScaling::ScalingPolicy'
