@@ -1,6 +1,8 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
 Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Launch into a new VPC"
   LICENSE: Apache License Version 2.0
   AWS::CloudFormation::Interface:
     ParameterGroups:

@@ -1,30 +1,20 @@
-Deploying this Quick Start for a new virtual private cloud (VPC) with
-*default parameters* builds the following _{partner-product-name}_ environment in the
-AWS Cloud.
+Deploying this Quick Start for a new virtual private cloud (VPC) with *default parameters* builds the following OpenEdge environment in the AWS Cloud.
 
-// Replace this example diagram with your own. Send us your source PowerPoint file. Be sure to follow our guidelines here : http://(we should include these points on our contributors giude)
-[#architecture1]
-.Quick Start architecture for _{partner-product-name}_ on AWS
-[link=https://docs.aws.amazon.com/quickstart/latest/linux-bastion/images/linux-bastion-hosts-on-aws-architecture.png]
-image::../images/architecture_diagram.png[Architecture,width=648,height=439]
+image:./media/image1.png[image,width=647,height=475]
 
-As shown in Figure 1, the Quick Start sets up the following:
+Figure 1: Quick Start architecture for OpenEdge on AWS
 
-* A highly available architecture that spans two Availability Zones.*
-* A VPC configured with public and private subnets, according to AWS
-best practices, to provide you with your own virtual network on AWS.*
+The Quick Start sets up the following:
 
-In the public subnets:
+* A highly available architecture that spans two Availability Zones.
+* A VPC configured with public and private subnets, according to AWS best practices, to provide you with your own virtual network on AWS.
+* In the public subnets:
 
-* Managed network address translation (NAT) gateways to allow outbound
-internet access for resources in the private subnets.*
-* A Linux bastion host in an Auto Scaling group to allow inbound Secure
-Shell (SSH) access to EC2 instances in public and private subnets.*
+* Managed NAT gateways to allow outbound internet access for resources in the private subnets.
+* A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to EC2 instances in public and private subnets.
 
-In the private subnets:
-// Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram.
-* <describe any additional components>.
+* In the private subnets:
 
-*The template that deploys the Quick Start into an existing VPC skips
-the components marked by asterisks and prompts you for your existing VPC
-configuration.
+* EC2 instances running a Web Server in an Auto Scaling group.
+* EC2 instances running PAS for OpenEdge in an Auto Scaling group.
+* Three EC2 instances running OpenEdge RDBMS with support for replication sets.

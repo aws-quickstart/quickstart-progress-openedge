@@ -1,11 +1,11 @@
-:quickstart-project-name: quickstart-documentation-base
-:partner-product-name: Example Product Name
-:partner-company-name: Example Company Name, Ltd.
-:doc-month: May
+:quickstart-project-name: quickstart-progress-openedge
+:partner-product-name: OpenEdge
+:partner-company-name: Progress
+:doc-month: July
 :doc-year: 2020
-:partner-contributors: John Doe and Jane Doe
-:quickstart-contributors: Jim Smith - AWS Global Partner SA, AWS + Joe Jones - Technical Product Manager, AWS
-:deployment_time: 30 minutes / 1 hour
+:partner-contributors: Edsel Garcia
+:quickstart-contributors: Dave May - Parter Solution Architect, Quick Start team
+:deployment_time: 30 minutes
 :default_deployment_region: us-east-1
 // Uncomment these two attributes if you are leveraging
 // - an AWS Marketplace listing.

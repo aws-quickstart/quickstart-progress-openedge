@@ -2,14 +2,20 @@
 == Best practices for using {partner-product-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any best practices for using the software._
+For information on best practices on using OpenEdge on AWS visit the Progress Information Hub at https://docs.progress.com.
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any security-related information._
+The OpenEdge application is accessed via a web browser using HTTP by default. Please visit the Progress Information Hub for info on how to implement access via HTTPS.
+
+You can use the RemoteAccessCIDR and WebserverCIDR parameters to restrict the IP addresses that you use to access the application.
 
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-_Add any other details that will help the customer use the software on AWS._
+Additional information on using OpenEdge on the AWS Cloud can be found at the Progress Information Hub:
+
+* _________________________
+https://docs.progress.com
+_________________________
