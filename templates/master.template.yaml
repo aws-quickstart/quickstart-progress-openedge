@@ -38,6 +38,8 @@ Metadata:
           - BastionAMIOS
           - BastionInstanceType
           - InstanceType
+          - MinScalingInstances
+          - MaxScalingInstances
       - Label:
           default: AWS Quick Start Configuration
         Parameters:
@@ -83,6 +85,10 @@ Metadata:
         default: Bastion instance type
       InstanceType:
         default: Instance type
+      MinScalingInstances:
+        default: Minimum Instances in ASG
+      MaxScalingInstances:
+        default: Maximum Instances in ASG
       QSS3BucketName:
         default: Quick Start S3 Bucket Name
       QSS3BucketRegion:
@@ -91,15 +97,15 @@ Metadata:
         default: Quick Start S3 Key Prefix
 Parameters:
   DBDeployPackage:
-    Description: URL to package to deploy databases into database EC2 instances
+    Description: S3 URL to package to deploy databases into database EC2 instances
     Type: String
     MinLength: 1
   PASOEDeployPackage:
-    Description: URL to package to deploy databases into PASOE EC2 instances
+    Description: S3 URL to package to deploy databases into PASOE EC2 instances
     Type: String
     MinLength: 1
   WebDeployPackage:
-    Description: URL to package to deploy Web UI into WebServer EC2 instances
+    Description: S3 URL to package to deploy Web UI into WebServer EC2 instances
     Type: String
     MinLength: 1
   PortNumber:
@@ -131,8 +137,16 @@ Parameters:
       - t2.small
       - t2.medium
       - t2.large
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.small
       - t3a.medium
+      - t3a.large
+      - t3a.xlarge
+      - t3a.2xlarge
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -241,6 +255,14 @@ Parameters:
     ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
     Description: "Allowed CIDR block for web access"
     Type: String
+  MinScalingInstances:
+    Default: '2'
+    Description: Minimum number of EC2 instances in ASG
+    Type: String
+  MaxScalingInstances:
+    Default: '8'
+    Description: Maximum number of EC2 instances in ASG
+    Type: String
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Resources:
@@ -348,6 +370,10 @@ Resources:
           Ref: InstanceType
         KeyPairName:
           Ref: KeyPairName
+        MinScalingInstances:
+          Ref: MinScalingInstances
+        MaxScalingInstances:
+          Ref: MaxScalingInstances
         PrivateSubnet1ID:
           Fn::GetAtt:
             - VPCStack
@@ -399,6 +425,10 @@ Resources:
           Ref: InstanceType
         KeyPairName:
           Ref: KeyPairName
+        MinScalingInstances:
+          Ref: MinScalingInstances
+        MaxScalingInstances:
+          Ref: MaxScalingInstances
         PrivateSubnet1ID:
           Fn::GetAtt:
             - VPCStack
