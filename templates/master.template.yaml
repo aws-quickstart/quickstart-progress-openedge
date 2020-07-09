@@ -1,5 +1,8 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
+
+Description: "Deploys a three-tier Progress OpenEdge stack into a new VPC (qs-1qtcokh3l)"
+
 Metadata:
   QuickStartDocumentation:
     EntrypointName: "Launch into a new VPC"
