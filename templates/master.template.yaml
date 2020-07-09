@@ -1,6 +1,11 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
+
+Description: "Deploys a three-tier Progress OpenEdge stack into a new VPC (qs-1qtcokh3l)"
+
 Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Launch into a new VPC"
   LICENSE: Apache License Version 2.0
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -11,9 +16,8 @@ Metadata:
       - Label:
           default: OpenEdge Parameters
         Parameters:
-          - DBAccessCIDR
           - RemoteAccessCIDR
-          - WebserverCIDR
+          - WebAccessCIDR
           - EmailAddress
           - DBDeployPackage
           - PASOEDeployPackage
@@ -39,6 +43,8 @@ Metadata:
           - BastionAMIOS
           - BastionInstanceType
           - InstanceType
+          - MinScalingInstances
+          - MaxScalingInstances
       - Label:
           default: AWS Quick Start Configuration
         Parameters:
@@ -50,11 +56,9 @@ Metadata:
         default: Availability zones
       KeyPairName:
         default: EC2 key pair name
-      DBAccessCIDR:
-        default: DB access CIDR
       RemoteAccessCIDR:
         default: Remote access CIDR
-      WebserverCIDR:
+      WebAccessCIDR:
         default: Web access CIDR
       EmailAddress:
         default: Email address
@@ -86,6 +90,10 @@ Metadata:
         default: Bastion instance type
       InstanceType:
         default: Instance type
+      MinScalingInstances:
+        default: Minimum Instances in ASG
+      MaxScalingInstances:
+        default: Maximum Instances in ASG
       QSS3BucketName:
         default: Quick Start S3 Bucket Name
       QSS3BucketRegion:
@@ -94,17 +102,17 @@ Metadata:
         default: Quick Start S3 Key Prefix
 Parameters:
   DBDeployPackage:
-    Description: URL to package to deploy databases into database EC2 instances
+    Description: S3 URL to package to deploy databases into database EC2 instances
     Type: String
-    Default: https://s3.amazonaws.com/mypublicfiles1/db.tar.gz
+    MinLength: 1
   PASOEDeployPackage:
-    Description: URL to package to deploy databases into PASOE EC2 instances
+    Description: S3 URL to package to deploy databases into PASOE EC2 instances
     Type: String
-    Default: https://s3.amazonaws.com/mypublicfiles1/pas.tar.gz
+    MinLength: 1
   WebDeployPackage:
-    Description: URL to package to deploy Web UI into WebServer EC2 instances
+    Description: S3 URL to package to deploy Web UI into WebServer EC2 instances
     Type: String
-    Default: https://s3.amazonaws.com/mypublicfiles1/web.tar.gz
+    MinLength: 1
   PortNumber:
     Description: Port number to use to connect to the database broker process
     Type: Number
@@ -134,8 +142,16 @@ Parameters:
       - t2.small
       - t2.medium
       - t2.large
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.small
       - t3a.medium
+      - t3a.large
+      - t3a.xlarge
+      - t3a.2xlarge
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -234,20 +250,23 @@ Parameters:
     Default: quickstart-progress-openedge/
     Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Type: String
-  DBAccessCIDR:
-    AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
-    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
-    Description: "Allowed CIDR block for external SSH access"
-    Type: String
   RemoteAccessCIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
     ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
     Description: "Allowed CIDR block for external SSH access"
     Type: String
-  WebserverCIDR:
+  WebAccessCIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
     ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
-    Description: "Allowed CIDR block for  webserver access"
+    Description: "Allowed CIDR block for web access"
+    Type: String
+  MinScalingInstances:
+    Default: '2'
+    Description: Minimum number of EC2 instances in ASG
+    Type: String
+  MaxScalingInstances:
+    Default: '8'
+    Description: Maximum number of EC2 instances in ASG
     Type: String
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
@@ -329,24 +348,10 @@ Resources:
           Fn::GetAtt:
             - VPCStack
             - Outputs.PrivateSubnet2AID
-        PublicSubnet1ID:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.PublicSubnet1ID
-        PublicSubnet2ID:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.PublicSubnet2ID
-        DBAccessCIDR:
-          Ref: DBAccessCIDR
         VPCID:
           Fn::GetAtt:
             - VPCStack
             - Outputs.VPCID
-        VPCCIDR:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.VPCCIDR
         PortNumber:
           Ref: PortNumber
         MinPort:
@@ -370,6 +375,10 @@ Resources:
           Ref: InstanceType
         KeyPairName:
           Ref: KeyPairName
+        MinScalingInstances:
+          Ref: MinScalingInstances
+        MaxScalingInstances:
+          Ref: MaxScalingInstances
         PrivateSubnet1ID:
           Fn::GetAtt:
             - VPCStack
@@ -386,18 +395,12 @@ Resources:
           Fn::GetAtt:
             - VPCStack
             - Outputs.PublicSubnet2ID
-        RemoteAccessCIDR:
-          Ref: RemoteAccessCIDR
-        WebserverCIDR:
-          Ref: WebserverCIDR
+        WebAccessCIDR:
+          Ref: WebAccessCIDR
         VPCID:
           Fn::GetAtt:
             - VPCStack
             - Outputs.VPCID
-        VPCCIDR:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.VPCCIDR
         DBHostName:
           Fn::GetAtt:
             - DatabaseStack
@@ -427,6 +430,10 @@ Resources:
           Ref: InstanceType
         KeyPairName:
           Ref: KeyPairName
+        MinScalingInstances:
+          Ref: MinScalingInstances
+        MaxScalingInstances:
+          Ref: MaxScalingInstances
         PrivateSubnet1ID:
           Fn::GetAtt:
             - VPCStack
@@ -443,18 +450,12 @@ Resources:
           Fn::GetAtt:
             - VPCStack
             - Outputs.PublicSubnet2ID
-        RemoteAccessCIDR:
-          Ref: RemoteAccessCIDR
-        WebserverCIDR:
-          Ref: WebserverCIDR
+        WebAccessCIDR:
+          Ref: WebAccessCIDR
         VPCID:
           Fn::GetAtt:
             - VPCStack
             - Outputs.VPCID
-        VPCCIDR:
-          Fn::GetAtt:
-            - VPCStack
-            - Outputs.VPCCIDR
         PASOEURL:
           Fn::GetAtt:
             - PASOEStack

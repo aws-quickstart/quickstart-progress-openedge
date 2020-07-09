@@ -14,8 +14,16 @@ Parameters:
       - t2.small
       - t2.medium
       - t2.large
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.small
       - t3a.medium
+      - t3a.large
+      - t3a.xlarge
+      - t3a.2xlarge
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -41,33 +49,15 @@ Parameters:
   KeyPairName:
     Type: "AWS::EC2::KeyPair::KeyName"
     ConstraintDescription: Name of an existing EC2 KeyPair.
-  DBAccessCIDR:
-    AllowedPattern: >-
-      ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
-    Description: Allowed CIDR block for  webserver access
-    Type: String
   PrivateSubnet1ID:
     Description: Private Subnet Id 1
     Type: "AWS::EC2::Subnet::Id"
   PrivateSubnet2ID:
     Description: Private Subnet Id 2
     Type: "AWS::EC2::Subnet::Id"
-  PublicSubnet1ID:
-    Description: Public Subnet Id 1
-    Type: "AWS::EC2::Subnet::Id"
-  PublicSubnet2ID:
-    Description: Public Subnet Id 2
-    Type: "AWS::EC2::Subnet::Id"
   VPCID:
     Description: "ID of the VPC (e.g., vpc-0343606e)"
     Type: "AWS::EC2::VPC::Id"
-  VPCCIDR:
-    AllowedPattern: >-
-      ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
-    ConstraintDescription: Must be a valid IP range in x.x.x.x/x notation
-    Description: The CIDR IP range of VPC
-    Type: String
   PortNumber:
     Description: Port number to use to connect to the database broker process
     Type: Number
@@ -125,10 +115,6 @@ Mappings:
       OEDBAMZNLINUX2: ami-017e8f595e2f4d3c3
     us-west-2:
       OEDBAMZNLINUX2: ami-0d00cfc095d9bbed9
-Conditions:
-  GovCloudCondition: !Equals
-    - !Ref "AWS::Region"
-    - us-gov-west-1
 Resources:
   NotificationTopic:
     Type: "AWS::SNS::Topic"
@@ -136,23 +122,58 @@ Resources:
       Subscription:
         - Endpoint: !Ref EmailAddress
           Protocol: email
+  S3AccessRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/"     
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - 'ec2.amazonaws.com'
+          Action: sts:AssumeRole      
+  S3AccessRolePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: S3AccessRolePolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:       
+        - Effect: Allow
+          Action:
+          - s3:Get*
+          - s3:List*
+          - s3:AbortMultipartUpload       
+          Resource:
+          - '*'
+      Roles:
+        - Ref: S3AccessRole
+  S3AccessProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: /
+      Roles:
+        - !Ref S3AccessRole
   SourceReplica:
     Type: "AWS::EC2::Instance"
-    # Metadata:
-    #   "AWS::CloudFormation::Init":
-    #     config:
-    #       files:
-    #         "/install/app.tar.gz":
-    #           source: https://mypublicfiles1.s3.amazonaws.com/app.tar.gz
-    #           mode: '000755'
-    #           owner: ec2-user
-    #           group: ec2-user
-    #      'AWS::CloudFormation::Authentication':
-    #        S3AccessCreds:
-    #          type: S3
-    #          accessKeyId: !Ref AccessKey
-    #          secretKey: !Ref SecretAccessKey
+    Metadata:
+      "AWS::CloudFormation::Init":
+        config:
+          files:
+            "/install/app.tar.gz":
+              source: !Sub "${DBDeployPackage}"
+              mode: '000755'
+              owner: ec2-user
+              group: ec2-user
+              authentication: S3AccessCreds
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref S3AccessRole
     Properties:
+      IamInstanceProfile: !Ref S3AccessProfile
       ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
@@ -174,11 +195,9 @@ Resources:
 
             mkdir -p /install
 
-            wget -O /install/app.tar.gz ${DBDeployPackage}
+            export OE_ENV=db0
 
-            OE_ENV=db0
-
-            export OE_ENV
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
 
             tar xCf /install /install/app.tar.gz
 
@@ -187,21 +206,22 @@ Resources:
           - DBDeployPackage: !Ref DBDeployPackage
   TargetReplicaOne:
     Type: "AWS::EC2::Instance"
-    # Metadata:
-    #   "AWS::CloudFormation::Init":
-    #     config:
-    #       files:
-    #         "/install/app.tar.gz":
-    #           source: https://mypublicfiles1.s3.amazonaws.com/app.tar.gz
-    #           mode: '000755'
-    #           owner: ec2-user
-    #           group: ec2-user
-    #      'AWS::CloudFormation::Authentication':
-    #        S3AccessCreds:
-    #          type: S3
-    #          accessKeyId: !Ref AccessKey
-    #          secretKey: !Ref SecretAccessKey
+    Metadata:
+      "AWS::CloudFormation::Init":
+        config:
+          files:
+            "/install/app.tar.gz":
+              source: !Sub "${DBDeployPackage}"
+              mode: '000755'
+              owner: ec2-user
+              group: ec2-user
+              authentication: S3AccessCreds
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref S3AccessRole
     Properties:
+      IamInstanceProfile: !Ref S3AccessProfile
       ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
@@ -223,11 +243,11 @@ Resources:
 
             mkdir -p /install
 
-            wget -O /install/app.tar.gz ${DBDeployPackage}
-
             OE_ENV=db1
 
             export OE_ENV
+
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
 
             tar xCf /install /install/app.tar.gz
 
@@ -236,21 +256,22 @@ Resources:
           - DBDeployPackage: !Ref DBDeployPackage      
   TargetReplicaTwo:
     Type: "AWS::EC2::Instance"
-    # Metadata:
-    #   "AWS::CloudFormation::Init":
-    #     config:
-    #       files:
-    #         "/install/app.tar.gz":
-    #           source: https://mypublicfiles1.s3.amazonaws.com/app.tar.gz
-    #           mode: '000755'
-    #           owner: ec2-user
-    #           group: ec2-user
-    #      'AWS::CloudFormation::Authentication':
-    #        S3AccessCreds:
-    #          type: S3
-    #          accessKeyId: !Ref AccessKey
-    #          secretKey: !Ref SecretAccessKey
+    Metadata:
+      "AWS::CloudFormation::Init":
+        config:
+          files:
+            "/install/app.tar.gz":
+              source: !Sub "${DBDeployPackage}"
+              mode: '000755'
+              owner: ec2-user
+              group: ec2-user
+              authentication: S3AccessCreds
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref S3AccessRole
     Properties:
+      IamInstanceProfile: !Ref S3AccessProfile
       ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
@@ -272,11 +293,11 @@ Resources:
 
             mkdir -p /install
 
-            wget -O /install/app.tar.gz ${DBDeployPackage}
-
             OE_ENV=db2
 
             export OE_ENV
+
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
 
             tar xCf /install /install/app.tar.gz
 
@@ -291,18 +312,15 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp:
-            Ref: DBAccessCIDR
+          CidrIp: '0.0.0.0/0'
         - IpProtocol: tcp
           FromPort: !Ref MinPort
           ToPort: !Ref MaxPort
-          CidrIp:
-            Ref: DBAccessCIDR
+          CidrIp: '0.0.0.0/0'
         - IpProtocol: tcp
           FromPort: !Ref PortNumber
           ToPort: !Ref PortNumber
-          CidrIp:
-            Ref: DBAccessCIDR
+          CidrIp: '0.0.0.0/0'
       VpcId: !Ref VPCID
 Outputs:
   DBHostName:

@@ -14,7 +14,16 @@ Parameters:
       - t2.small
       - t2.medium
       - t2.large
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.small
+      - t3a.medium
+      - t3a.large
+      - t3a.xlarge
+      - t3a.2xlarge
       - m4.large
       - m4.xlarge
       - m4.2xlarge
@@ -40,17 +49,11 @@ Parameters:
   KeyPairName:
     Type: 'AWS::EC2::KeyPair::KeyName'
     ConstraintDescription: Name of an existing EC2 KeyPair.
-  WebserverCIDR:
+  WebAccessCIDR:
     AllowedPattern: >-
       ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
     Description: Allowed CIDR block for  webserver access
-    Type: String
-  RemoteAccessCIDR:
-    AllowedPattern: >-
-      ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
-    Description: Allowed CIDR block for external SSH access
     Type: String
   PrivateSubnet1ID:
     Description: Private Subnet Id 1
@@ -67,12 +70,6 @@ Parameters:
   VPCID:
     Description: 'ID of the VPC (e.g., vpc-0343606e)'
     Type: 'AWS::EC2::VPC::Id'
-  VPCCIDR:
-    AllowedPattern: >-
-      ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
-    ConstraintDescription: Must be a valid IP range in x.x.x.x/x notation
-    Description: The CIDR IP range of VPC
-    Type: String
   DBHostName:
     Description: IP Address of SourceReplica Instance
     Type: String
@@ -81,6 +78,12 @@ Parameters:
     Type: String
   DBHostName2:
     Description: IP Address of SourceReplica Instance
+    Type: String
+  MinScalingInstances:
+    Description: Minimum number of EC2 instances in ASG
+    Type: String
+  MaxScalingInstances:
+    Description: Maximum number of EC2 instances in ASG
     Type: String
 Mappings:
   AWSAMIRegionMap:
@@ -128,10 +131,6 @@ Mappings:
       PASOEAMZNLINUX2: ami-02898a71d0d57337f
     us-west-2:
       PASOEAMZNLINUX2: ami-097e290f0ee541123
-Conditions:
-  GovCloudCondition: !Equals 
-    - !Ref 'AWS::Region'
-    - us-gov-west-1
 Resources:
   NotificationTopic:
     Type: 'AWS::SNS::Topic'
@@ -139,6 +138,40 @@ Resources:
       Subscription:
         - Endpoint: !Ref EmailAddress
           Protocol: email
+  S3AccessRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - 'ec2.amazonaws.com'
+          Action: sts:AssumeRole
+  S3AccessRolePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: S3AccessRolePolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:Get*
+          - s3:List*
+          - s3:AbortMultipartUpload
+          Resource:
+          - '*'
+      Roles:
+        - Ref: S3AccessRole
+  S3AccessProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: /
+      Roles:
+        - !Ref S3AccessRole
   PASOEGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
@@ -146,8 +179,8 @@ Resources:
         - !Ref PrivateSubnet1ID
         - !Ref PrivateSubnet2ID
       LaunchConfigurationName: !Ref PASOELaunchConfig
-      MinSize: '2'
-      MaxSize: '8'
+      MinSize: !Ref MinScalingInstances
+      MaxSize: !Ref MaxScalingInstances
       TargetGroupARNs:
         - !Ref PASOETargetGroup
       NotificationConfigurations:
@@ -173,7 +206,22 @@ Resources:
         WaitOnResourceSignals: true
   PASOELaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
+    Metadata:
+      "AWS::CloudFormation::Init":
+        config:
+          files:
+            "/install/app.tar.gz":
+              source: !Sub "${PASOEDeployPackage}"
+              mode: '000755'
+              owner: ec2-user
+              group: ec2-user
+              authentication: S3AccessCreds
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref S3AccessRole
     Properties:
+      IamInstanceProfile: !Ref S3AccessProfile
       KeyName: !Ref KeyPairName
       ImageId: !FindInMap 
         - AWSAMIRegionMap
@@ -191,42 +239,25 @@ Resources:
 
             mkdir -p /install
 
-            wget -O /install/app.tar.gz ${PASOEDeployPackage}
+            export OE_ENV=pasoe
 
-            OE_ENV=pasoe
+            export DBHostName=${DBHostName}
 
-            DBHostName=${DBHostName}
+            export DBHostName1=${DBHostName1}
 
-            export OE_ENV DBHostName
+            export DBHostName2=${DBHostName2}
 
-            DBHostName1=${DBHostName1}
-
-            export OE_ENV DBHostName1
-
-            DBHostName2=${DBHostName2}
-
-            export OE_ENV DBHostName2
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource PASOELaunchConfig --region ${AWS::Region}
 
             tar xCf /install /install/app.tar.gz
 
-            echo ${DBHostName} >> /tmp/output.txt
-
-
-            echo ${DBHostName} >> /tmp/output.txt
-
             /install/app/deploy.sh
-
-            # Signal cfn-init (final check)
-
-            #/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource PASOELaunchConfig --region ${AWS::Region}
 
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource PASOEGroup --region ${AWS::Region}
 
             #            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
-          - S3Region: !If
-              - GovCloudCondition
-              - s3-us-gov-west-1
-              - s3
+
+          - PASOEDeployPackage: !Ref PASOEDeployPackage
   PASOEScaleUpPolicy:
     Type: 'AWS::AutoScaling::ScalingPolicy'
     Properties:
@@ -280,7 +311,7 @@ Resources:
         - !Ref PublicSubnet1ID
         - !Ref PublicSubnet2ID
       SecurityGroups:
-        - !Ref PASOESecurityGroup
+        - !Ref ELBPASOESecurityGroup
       Tags:
         - Key: name
           Value:  WebServer ASG Instance
@@ -306,24 +337,30 @@ Resources:
   PASOESecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: Enable HTTP to PASOE from the load balancer and SSH Access from RemoteAccessCIDR
+      GroupDescription: Enable access to the PASOE EC2 Instance
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: !Ref RemoteAccessCIDR
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: !Ref WebserverCIDR
+          CidrIp: '0.0.0.0/0'
         - IpProtocol: tcp
           FromPort: 8810
           ToPort: 8810
-          CidrIp: !Ref WebserverCIDR
+          CidrIp: '0.0.0.0/0'
         - IpProtocol: tcp
           FromPort: 8811
           ToPort: 8811
-          CidrIp: !Ref WebserverCIDR
+          CidrIp: '0.0.0.0/0'
+      VpcId: !Ref VPCID
+  ELBPASOESecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable HTTP to the load balancer
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref WebAccessCIDR
       VpcId: !Ref VPCID
 Outputs:
   URL:

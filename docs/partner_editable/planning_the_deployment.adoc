@@ -1,0 +1,2 @@
+=== Prerequisites
+Deploying this Quick Start requires a subscription to the Progress OpenEdge database and PASOE MarketPlace listings.

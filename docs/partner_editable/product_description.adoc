@@ -1,0 +1,11 @@
+== OpenEdge on AWS
+
+The OpenEdge on AWS Cloud is a convenient way to create the infrastructure required to run an n-tier OpenEdge ABL application with a Web UI, REST data services and the OpenEdge database. It combines the AWS services and the OpenEdge functionality to achieve high availability, redundancy and scalability.
+
+You can use the Quick Start CloudFormation template interactively to create a new infrastructure or use the CloudFormation CLI to automate deployments of OpenEdge applications from a CI/CD pipeline.
+
+The template uses user-provided deployment packages for the Web server, PAS for OpenEdge and the OpenEdge database so that the components are ready to run after the creation of the infrastructure. You can package your on-premises application using this approach to easily deploy it to the AWS cloud.
+
+The Web server and PAS for OpenEdge dynamically download and install the latest version of the package when the EC2 instances are created. This can be used rollout new versions of the application if desired.
+
+The configuration for the database can use OpenEdge Replication Sets or any other approach to provide redundancy.
