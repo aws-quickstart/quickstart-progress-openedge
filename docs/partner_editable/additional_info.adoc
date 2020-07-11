@@ -16,6 +16,5 @@ You can use the RemoteAccessCIDR and WebserverCIDR parameters to restrict the IP
 
 Additional information on using OpenEdge on the AWS Cloud can be found at the Progress Information Hub:
 
-* _________________________
-https://docs.progress.com
+* https://docs.progress.com
 _________________________

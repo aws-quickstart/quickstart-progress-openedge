@@ -5,7 +5,7 @@
 :doc-year: 2020
 :partner-contributors: Edsel Garcia, Progress Software
 :quickstart-contributors: Dave May - Parter Solution Architect, Quick Start team
-:deployment_time: 30 minutes
+:deployment_time: 20 minutes
 :default_deployment_region: us-east-1
 // Uncomment these two attributes if you are leveraging
 // - an AWS Marketplace listing.
