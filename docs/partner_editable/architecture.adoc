@@ -1,6 +1,6 @@
 Deploying this Quick Start for a new virtual private cloud (VPC) with *default parameters* builds the following OpenEdge environment in the AWS Cloud.
 
-image:./media/image1.png[image,width=647,height=475]
+image:./images/image1.png[image,width=647,height=475]
 
 Figure 1: Quick Start architecture for OpenEdge on AWS
 
