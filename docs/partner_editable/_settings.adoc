@@ -10,5 +10,5 @@
 // Uncomment these two attributes if you are leveraging
 // - an AWS Marketplace listing.
 // Additional content will be auto-generated based on these attributes.
-// :marketplace_subscription:
-// :marketplace_listing_url: https://example.com/
+:marketplace_subscription:
+:marketplace_listing_url: https://aws.amazon.com/marketplace/pp/B08CRKD9MY?qid=1594739011658&sr=0-3&ref_=srh_res_product_title
