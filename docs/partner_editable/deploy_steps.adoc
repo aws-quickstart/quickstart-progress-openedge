@@ -10,9 +10,8 @@ ifdef::marketplace_subscription[]
 
 This Quick Start requires a subscription to the AMI for {partner-product-name} in AWS Marketplace.
 
-. Sign in to your AWS account.
 . {https://aws.amazon.com/marketplace/pp/B08CRKD9MY?qid=1594739011658&sr=0-3&ref_=srh_res_product_title}[Open the page for the Progress Application Server AMI in AWS Marketplace], and then choose *Continue to Subscribe*.
-. {https://aws.amazon.com/marketplace/pp/B08CS3KFH5?qid=1594739011658&sr=0-1&ref_=srh_res_product_title}[Open the page for teh Progress OpenEdge RDBMS AMI in AWS Marketplace], and then choose *Continue to Subscribe*.
+. {https://aws.amazon.com/marketplace/pp/B08CS3KFH5?qid=1594739011658&sr=0-1&ref_=srh_res_product_title}[Open the page for the Progress OpenEdge RDBMS AMI in AWS Marketplace], and then choose *Continue to Subscribe*.
 . Review the terms and conditions for software usage, and then choose *Accept Terms*. +
   A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the https://aws.amazon.com/marketplace/help/200799470[AWS Marketplace documentation^].
 
@@ -24,7 +23,7 @@ endif::marketplace_subscription[]
 
 NOTE: You are responsible for the cost of the AWS services used while running this Quick Start reference deployment. There is no additional cost for using this Quick Start. For full details, see the pricing pages for each AWS service used by this Quick Start. Prices are subject to change.
 
-. Sign in to your AWS account, and choose one of the following options to launch the AWS CloudFormation template. For help with choosing an option, see link:#_deployment_options[deployment options] earlier in this guide.
+. Click the following link to launch the AWS CloudFormation template. For help with choosing an option, see link:#_deployment_options[deployment options] earlier in this guide.
 
 [cols=",]
 |===
