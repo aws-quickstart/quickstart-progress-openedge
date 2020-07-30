@@ -1,2 +1,2 @@
 === Prerequisites
-Deploying this Quick Start requires a subscription to the Progress OpenEdge database and PASOE MarketPlace listings.
+Deploying this Quick Start requires subscriptions to both https://aws.amazon.com/marketplace/pp/B08CRKD9MY?qid=1596138361111&sr=0-1&ref_=srh_res_product_title[Progress Application Server (PAS) for OpenEdge] and https://aws.amazon.com/marketplace/pp/B08CS3KFH5?qid=1596138361111&sr=0-2&ref_=srh_res_product_title[Progress OpenEdge RDBMS].
