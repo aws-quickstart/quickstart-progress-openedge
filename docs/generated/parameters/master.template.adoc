@@ -2,24 +2,24 @@
 .VPC parameters
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|Availability Zones
-(`AvailabilityZones`)|`**__Requires Input__**`|List of Availability Zones to use for the subnets in the VPC. Only two Availability Zones are used for this deployment.
+|Parameter label (name) |Default value|Description|Availability Zones
+(`AvailabilityZones`)|`**__Requires input__**`|List of Availability Zones to use for the subnets in the VPC. Only two Availability Zones are used for this deployment.
 |===
 .OpenEdge parameters
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|Remote access CIDR
-(`RemoteAccessCIDR`)|`**__Requires Input__**`|Allowed CIDR block for external SSH access|Web access CIDR
-(`WebAccessCIDR`)|`**__Requires Input__**`|Allowed CIDR block for web access|Email address
-(`EmailAddress`)|`**__Requires Input__**`|Email address for notification.|Database deploy package
-(`DBDeployPackage`)|`**__Requires Input__**`|S3 URL package to deploy databases into EC2 instances.|PASOE deploy package
-(`PASOEDeployPackage`)|`**__Requires Input__**`|S3 URL package to deploy databases into PASOE EC2 instances.|Web deploy package
-(`WebDeployPackage`)|`**__Requires Input__**`|S3 URL package to deploy web UI into WebServer EC2 instances.
+|Parameter label (name) |Default value|Description|Remote access CIDR
+(`RemoteAccessCIDR`)|`**__Requires input__**`|Allowed CIDR block for external SSH access|Web access CIDR
+(`WebAccessCIDR`)|`**__Requires input__**`|Allowed CIDR block for web access|Email address
+(`EmailAddress`)|`**__Requires input__**`|Email address for notification.|Database deploy package
+(`DBDeployPackage`)|`**__Requires input__**`|S3 URL package to deploy databases into EC2 instances.|PASOE deploy package
+(`PASOEDeployPackage`)|`**__Requires input__**`|S3 URL package to deploy databases into PASOE EC2 instances.|Web deploy package
+(`WebDeployPackage`)|`**__Requires input__**`|S3 URL package to deploy web UI into WebServer EC2 instances.
 |===
 .OpenEdge database configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|Port number
+|Parameter label (name) |Default value|Description|Port number
 (`PortNumber`)|`20000`|Port number to connect to the database broker process.|Min port
 (`MinPort`)|`1025`|Use the minimum dynamic server (-minport) number within a specified range of port numbers that are accessible to a client.|Max port
 (`MaxPort`)|`2000`|Use the maximum dynamic server (-minport) number within a specified range of port numbers that are accessible to a client.
@@ -27,7 +27,7 @@
 .Network configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|Private subnet 1 CIDR
+|Parameter label (name) |Default value|Description|Private subnet 1 CIDR
 (`PrivateSubnet1CIDR`)|`10.0.0.0/19`|CIDR block for private subnet 1, located in Availability Zone 1.|Private subnet 2 CIDR
 (`PrivateSubnet2CIDR`)|`10.0.32.0/19`|CIDR block for private subnet 2, located in Availability Zone 2.|Public subnet 1 CIDR
 (`PublicSubnet1CIDR`)|`10.0.128.0/20`|CIDR block for the public (DMZ) subnet 1, located in Availability Zone 1.|Public subnet 2 CIDR
@@ -37,8 +37,8 @@
 .Amazon EC2 configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|EC2 key pair
-(`KeyPairName`)|`**__Requires Input__**`|NO_DESCRIPTION|Bastion AMI OS
+|Parameter label (name) |Default value|Description|EC2 key pair
+(`KeyPairName`)|`**__Requires input__**`|NO_DESCRIPTION|Bastion AMI OS
 (`BastionAMIOS`)|`Amazon-Linux2-HVM`|Linux distribution for the AMI to be used for the bastion instances.|Bastion instance type
 (`BastionInstanceType`)|`t2.micro`|Amazon EC2 instance type for the bastion instances.|Instance type
 (`InstanceType`)|`t3a.medium`|EC2 instance type|Minimum instances in ASG
@@ -48,7 +48,7 @@
 .AWS Quick Start configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|Quick Start S3 bucket
+|Parameter label (name) |Default value|Description|Quick Start S3 bucket
 (`QSS3BucketName`)|`aws-quickstart`|S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|Quick Start S3 bucket Region
 (`QSS3BucketRegion`)|`us-east-1`|AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. If you use your own bucket, specify that value.|Quick Start S3 key prefix
 (`QSS3KeyPrefix`)|`quickstart-progress-openedge/`|S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).

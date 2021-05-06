@@ -1,0 +1,45 @@
+project:
+  name: quickstart-progress-openedge
+  owner: egarcia@progress.com
+  package_lambda: false
+  regions:
+  - af-south-1
+  - ap-east-1
+  - ap-northeast-1
+  - ap-northeast-2
+  - ap-northeast-3
+  - ap-south-1
+  - ap-southeast-1
+  - ap-southeast-2
+  - ca-central-1
+  - eu-central-1
+  - eu-north-1
+  - eu-south-1
+  - eu-west-1
+  - eu-west-2
+  - eu-west-3
+  - me-south-1
+  - sa-east-1
+  - us-east-1
+  - us-east-2
+  - us-west-1
+  - us-west-2
+  s3_bucket: ''
+tests:
+  lab-master-vpc:
+    parameters:
+      AvailabilityZones: $[taskcat_getaz_2]
+      EmailAddress: egarcia@progress.com
+      KeyPairName: $[taskcat_getkeypair]
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      QSS3KeyPrefix: quickstart-progress-openedge/
+      RemoteAccessCIDR: 0.0.0.0/0
+      WebAccessCIDR: 0.0.0.0/0
+      DBDeployPackage: 'https://s3.us-east-1.amazonaws.com/mypublicfiles1/db.tar.gz'
+      PASOEDeployPackage:  'https://s3.us-east-1.amazonaws.com/mypublicfiles1/pas.tar.gz'
+      WebDeployPackage: 'https://s3.us-east-1.amazonaws.com/mypublicfiles1/web.tar.gz'
+    regions:
+    - us-east-1
+    s3_bucket: ''
+    template: templates/master.template.yaml

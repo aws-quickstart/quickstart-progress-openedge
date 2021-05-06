@@ -16,6 +16,7 @@
 :template_aws_sns_topic:
 :template_cloudformation:
 :template_cloudwatch:
+:template_deterministic_ec2_instances:
 :template_ec2:
 :template_elasticloadbalancingv2:
 :template_iam:
