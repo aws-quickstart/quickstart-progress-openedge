@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.12">
+<meta name="generator" content="Asciidoctor 2.0.15">
 <title>OpenEdge on the AWS Cloud</title>
 <style>
 
@@ -806,6 +806,7 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#_sign_in_to_your_aws_account">Sign in to your AWS account</a></li>
 <li><a href="#_subscribe_to_the_openedge_ami">Subscribe to the OpenEdge AMI</a></li>
 <li><a href="#_launch_the_quick_start">Launch the Quick Start</a></li>
+<li><a href="#_launch_into_a_new_vpc">Launch into a new VPC</a></li>
 </ul>
 </li>
 <li><a href="#_best_practices_for_using_openedge_on_aws">Best practices for using OpenEdge on AWS</a></li>
@@ -1280,11 +1281,13 @@ In the following tables, parameters are listed by category and described separat
 NOTE: Unless you are customizing the Quick Start templates for your own deployment projects, keep the default settings for the parameters <strong>Quick Start S3 bucket name</strong>, <strong>Quick Start S3 bucket Region</strong>, and <strong>Quick Start S3 key prefix</strong>. Changing these settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.</p>
 </div>
 <div class="paragraph">
-<p>+
-=== Launch into a new VPC
-.VPC parameters</p>
+<p>+</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_launch_into_a_new_vpc">Launch into a new VPC</h3>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. VPC parameters</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1307,7 +1310,7 @@ NOTE: Unless you are customizing the Quick Start templates for your own deployme
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. OpenEdge parameters</caption>
+<caption class="title">Table 2. OpenEdge parameters</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1360,7 +1363,7 @@ NOTE: Unless you are customizing the Quick Start templates for your own deployme
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. OpenEdge database configuration</caption>
+<caption class="title">Table 3. OpenEdge database configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1395,7 +1398,7 @@ NOTE: Unless you are customizing the Quick Start templates for your own deployme
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Network configuration</caption>
+<caption class="title">Table 4. Network configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1442,7 +1445,7 @@ NOTE: Unless you are customizing the Quick Start templates for your own deployme
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Amazon EC2 configuration</caption>
+<caption class="title">Table 5. Amazon EC2 configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1495,7 +1498,7 @@ NOTE: Unless you are customizing the Quick Start templates for your own deployme
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. AWS Quick Start configuration</caption>
+<caption class="title">Table 6. AWS Quick Start configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1638,17 +1641,17 @@ and to share your customizations with others.</p>
 </div>
 <p class="footer-text">
 <!-- We can use document attributes: -->
-<!-- Generated with Asciidoctor v2.0.12. -->
+<!-- Generated with Asciidoctor v2.0.15. -->
 <a href="https://aws.amazon.com/privacy/">Privacy</a> | <a href="https://aws.amazon.com/terms/">Site terms</a> | &copy; 2021, Amazon Web Services, Inc. or its affiliates and Progress. All rights reserved.
 </p>
 </body>
 </html>
 <!--
 repo commit:
-56f1d052976698d3eb39ee9f3791da54e27d13a8
+6fedbbe16b546bae23b45026973b856eb8a0f253
 
 submodule config:
 +59b9927c61cd1831141cf0350520c89abb2246da docs/boilerplate (heads/main)
- dd78caba92ec7e31cc2d2b7b623ee53626db986a submodules/quickstart-aws-vpc (v1.0-45-gdd78cab)
- f11521ad6c8e1568cb3d5437f624ad8a3bea931f submodules/quickstart-linux-bastion (remotes/origin/logging-12-gf11521a)
+ 1f9a7bebc434f9a38b0ed4d4dd80d438d4d26204 submodules/quickstart-aws-vpc (v1.0-57-g1f9a7be)
+ bb45452fbbd46adb9918c6bcc3cdd70e87491349 submodules/quickstart-linux-bastion (heads/main)
 -->
