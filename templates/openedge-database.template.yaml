@@ -1,7 +1,16 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  OpenEdge Database infrastructure with Replication Set
+  OpenEdge Database infrastructure with Replication Set (qs-1rus69tf0)
 Parameters:
+  DeployBucket:
+    Description: S3 bucket containing deployment packages.
+    Type: String
+    MinLength: 1
+  DeployBucketRegion:
+    Description: Region in which the deployment packages are stored.
+    Type: String
+    MinLength: 1
+    Default: us-east-1
   DBDeployPackage:
     Description: URL to package to deploy databases into database EC2 instances
     Type: String
@@ -45,6 +54,22 @@ Parameters:
     Description: Use Maximum Dynamic Server (-minport) number to specify the highest port number in a specified range of port numbers accessible to a client.
     Type: Number
     Default: 2000
+  QSS3BucketName:
+    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
+    ConstraintDescription: "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    Default: aws-quickstart
+    Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: "AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. If you use your own bucket, specify that value."
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: "^[0-9a-zA-Z-/]*$"
+    ConstraintDescription: "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
+    Default: quickstart-progress-openedge/
+    Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
+    Type: String
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -117,9 +142,10 @@ Resources:
           Action:
           - s3:Get*
           - s3:List*
-          - s3:AbortMultipartUpload       
+          - s3:AbortMultipartUpload   
           Resource:
-          - '*'
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}'
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/${DBDeployPackage}'
       Roles:
         - Ref: S3AccessRole
   S3AccessProfile:
@@ -139,13 +165,13 @@ Resources:
                 command: aws configure set default.s3.signature_version s3v4
               01_set_default_region:
                 command: !Sub "aws configure set default.region '${AWS::Region}'"
-          files:
-            "/install/app.tar.gz":
-              source: !Sub "${DBDeployPackage}"
-              mode: '000755'
-              owner: ec2-user
-              group: ec2-user
-              authentication: S3AccessCreds
+#          files:
+#            "/install/app.tar.gz":
+#              source: !Sub 'https://s3.${DeployBucketRegion}.amazonaws.com/${DeployBucket}/${DBDeployPackage}'
+#              mode: '000755'
+#              owner: ec2-user
+#              group: ec2-user
+#              authentication: S3AccessCreds
       'AWS::CloudFormation::Authentication':
         S3AccessCreds:
           type: S3
@@ -173,6 +199,8 @@ Resources:
 
             mkdir -p /install
 
+            curl ${DeployPackage} --output /install/app.tar.gz
+
             export OE_ENV=db0
 
             /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
@@ -181,7 +209,7 @@ Resources:
 
             /install/app/deploy.sh
 
-          - DBDeployPackage: !Ref DBDeployPackage
+          - DeployPackage: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'
   TargetReplicaOne:
     Type: "AWS::EC2::Instance"
     Metadata:
@@ -193,13 +221,13 @@ Resources:
                 command: aws configure set default.s3.signature_version s3v4
               01_set_default_region:
                 command: !Sub "aws configure set default.region '${AWS::Region}'"
-          files:
-            "/install/app.tar.gz":
-              source: !Sub "${DBDeployPackage}"
-              mode: '000755'
-              owner: ec2-user
-              group: ec2-user
-              authentication: S3AccessCreds
+#          files:
+#            "/install/app.tar.gz":
+#              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'
+#              mode: '000755'
+#              owner: ec2-user
+#             group: ec2-user
+#              authentication: S3AccessCreds
       'AWS::CloudFormation::Authentication':
         S3AccessCreds:
           type: S3
@@ -227,6 +255,8 @@ Resources:
 
             mkdir -p /install
 
+            curl ${DeployPackage} --output /install/app.tar.gz
+
             OE_ENV=db1
 
             export OE_ENV
@@ -237,7 +267,7 @@ Resources:
 
             /install/app/deploy.sh
 
-          - DBDeployPackage: !Ref DBDeployPackage      
+          - DeployPackage: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'     
   TargetReplicaTwo:
     Type: "AWS::EC2::Instance"
     Metadata:
@@ -249,13 +279,13 @@ Resources:
                 command: aws configure set default.s3.signature_version s3v4
               01_set_default_region:
                 command: !Sub "aws configure set default.region '${AWS::Region}'"
-          files:
-            "/install/app.tar.gz":
-              source: !Sub "${DBDeployPackage}"
-              mode: '000755'
-              owner: ec2-user
-              group: ec2-user
-              authentication: S3AccessCreds
+#          files:
+#            "/install/app.tar.gz":
+#              source: !Sub 'https://s3.${DeployBucketRegion}.amazonaws.com/${DeployBucket}/${DBDeployPackage}'
+#              mode: '000755'
+#              owner: ec2-user
+#              group: ec2-user
+#              authentication: S3AccessCreds
       'AWS::CloudFormation::Authentication':
         S3AccessCreds:
           type: S3
@@ -283,6 +313,8 @@ Resources:
 
             mkdir -p /install
 
+            curl ${DeployPackage} --output /install/app.tar.gz
+
             OE_ENV=db2
 
             export OE_ENV
@@ -293,7 +325,7 @@ Resources:
 
             /install/app/deploy.sh
 
-          - DBDeployPackage: !Ref DBDeployPackage      
+          - DeployPackage: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'     
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:

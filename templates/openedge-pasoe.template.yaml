@@ -1,9 +1,18 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-   PAS for OpenEdge infrastructure with Auto Scaling
+   PAS for OpenEdge infrastructure with Auto Scaling (qs-1rus69ti3)
 Parameters:
+  DeployBucket:
+    Description: S3 bucket containing deployment packages.
+    Type: String
+    MinLength: 1
+  DeployBucketRegion:
+    Description: Region in which the deployment packages are stored.
+    Type: String
+    MinLength: 1
+    Default: us-east-1
   PASOEDeployPackage:
-    Description: URL to package to deploy databases into PASOE EC2 instances
+    Description: S3 key to deploy databases into PASOE EC2 instances
     Type: String
   InstanceType:
     Description: EC2 instance type
@@ -61,6 +70,24 @@ Parameters:
   MaxScalingInstances:
     Description: Maximum number of EC2 instances in ASG
     Type: String
+  QSS3BucketName:
+    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
+    ConstraintDescription: "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    Default: aws-quickstart
+    Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: "AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. If you use your own bucket, specify that value."
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: "^[0-9a-zA-Z-/]*$"
+    ConstraintDescription: "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
+    Default: quickstart-progress-openedge/
+    Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
+    Type: String
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -135,7 +162,8 @@ Resources:
           - s3:List*
           - s3:AbortMultipartUpload
           Resource:
-          - '*'
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}'
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/${PASOEDeployPackage}'
       Roles:
         - Ref: S3AccessRole
   S3AccessProfile:
@@ -187,13 +215,13 @@ Resources:
                 command: aws configure set default.s3.signature_version s3v4
               01_set_default_region:
                 command: !Sub "aws configure set default.region '${AWS::Region}'"
-          files:
-            "/install/app.tar.gz":
-              source: !Sub "${PASOEDeployPackage}"
-              mode: '000755'
-              owner: ec2-user
-              group: ec2-user
-              authentication: S3AccessCreds
+#          files:
+#            "/install/app.tar.gz":
+#              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${PASOEDeployPackage}'
+#              mode: '000755'
+#              owner: ec2-user
+#              group: ec2-user
+#              authentication: S3AccessCreds
       'AWS::CloudFormation::Authentication':
         S3AccessCreds:
           type: S3
@@ -217,6 +245,8 @@ Resources:
 
             mkdir -p /install
 
+            curl ${DeployPackage} --output /install/app.tar.gz
+
             export OE_ENV=pasoe
 
             export DBHostName=${DBHostName}
@@ -235,7 +265,7 @@ Resources:
 
             #            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
 
-          - PASOEDeployPackage: !Ref PASOEDeployPackage
+          - DeployPackage: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${PASOEDeployPackage}'
   PASOEScaleUpPolicy:
     Type: 'AWS::AutoScaling::ScalingPolicy'
     Properties:

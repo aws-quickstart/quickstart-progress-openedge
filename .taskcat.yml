@@ -36,9 +36,11 @@ tests:
       QSS3KeyPrefix: quickstart-progress-openedge/
       RemoteAccessCIDR: 0.0.0.0/0
       WebAccessCIDR: 0.0.0.0/0
-      DBDeployPackage: 'https://s3.us-east-1.amazonaws.com/mypublicfiles1/db.tar.gz'
-      PASOEDeployPackage:  'https://s3.us-east-1.amazonaws.com/mypublicfiles1/pas.tar.gz'
-      WebDeployPackage: 'https://s3.us-east-1.amazonaws.com/mypublicfiles1/web.tar.gz'
+      DeployBucket: 'mypublicfiles1'
+      DeployBucketRegion: 'us-east-1'
+      DBDeployPackage: 'db.tar.gz'
+      PASOEDeployPackage:  'pas.tar.gz'
+      WebDeployPackage: 'web.tar.gz'
     regions:
     - us-east-1
     s3_bucket: ''
