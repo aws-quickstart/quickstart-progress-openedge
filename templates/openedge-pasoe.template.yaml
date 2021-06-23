@@ -162,8 +162,9 @@ Resources:
           - s3:List*
           - s3:AbortMultipartUpload
           Resource:
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/${PASOEDeployPackage}*'
             - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}'
-            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/${PASOEDeployPackage}'
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/*'
       Roles:
         - Ref: S3AccessRole
   S3AccessProfile:
@@ -207,14 +208,14 @@ Resources:
   PASOELaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
     Metadata:
-      "AWS::CloudFormation::Init":
-        config:
-          awscli:
-            commands:
-              00_set_default_s3_signature_version:
-                command: aws configure set default.s3.signature_version s3v4
-              01_set_default_region:
-                command: !Sub "aws configure set default.region '${AWS::Region}'"
+#      "AWS::CloudFormation::Init":
+#        config:
+#          awscli:
+#            commands:
+#              00_set_default_s3_signature_version:
+#                command: aws configure set default.s3.signature_version s3v4
+#              01_set_default_region:
+#                command: !Sub "aws configure set default.region '${DeployBucketRegion}'"
 #          files:
 #            "/install/app.tar.gz":
 #              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${PASOEDeployPackage}'
@@ -245,7 +246,7 @@ Resources:
 
             mkdir -p /install
 
-            curl ${DeployPackage} --output /install/app.tar.gz
+            aws s3 cp ${DeployPackage} /install/app.tar.gz
 
             export OE_ENV=pasoe
 
@@ -265,7 +266,8 @@ Resources:
 
             #            [ $(qs_status) == 0 ] && cfn_success || cfn_fail
 
-          - DeployPackage: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${PASOEDeployPackage}'
+          - DeployRegion: !Ref DeployBucketRegion
+            DeployPackage: !Sub 's3://${DeployBucket}/${PASOEDeployPackage}'
   PASOEScaleUpPolicy:
     Type: 'AWS::AutoScaling::ScalingPolicy'
     Properties:
