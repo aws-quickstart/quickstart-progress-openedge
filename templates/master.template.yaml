@@ -19,6 +19,8 @@ Metadata:
           - RemoteAccessCIDR
           - WebAccessCIDR
           - EmailAddress
+          - DeployBucket
+          - DeployBucketRegion
           - DBDeployPackage
           - PASOEDeployPackage
           - WebDeployPackage
@@ -54,6 +56,10 @@ Metadata:
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
+      DeployBucket:
+        default: S3 bucket with deployment assets
+      DeployBucketRegion:
+        default: Region in which the deployment assets are stored
       KeyPairName:
         default: EC2 key pair
       RemoteAccessCIDR:
@@ -101,18 +107,30 @@ Metadata:
       QSS3KeyPrefix:
         default: Quick Start S3 key prefix
 Parameters:
+  DeployBucket:
+    Description: S3 bucket containing deployment packages.
+    Type: String
+    MinLength: 1
+  DeployBucketRegion:
+    Description: Region in which the deployment packages are stored.
+    Type: String
+    MinLength: 1
+    Default: us-east-1
   DBDeployPackage:
-    Description: S3 URL package to deploy databases into EC2 instances.
+    Description: S3 key for package to deploy databases into EC2 instances.
     Type: String
     MinLength: 1
+    Default: db.tar.gz
   PASOEDeployPackage:
-    Description: S3 URL package to deploy databases into PASOE EC2 instances.
+    Description: S3 key for package to deploy databases into PASOE EC2 instances.
     Type: String
     MinLength: 1
+    Default: pas.tar.gz
   WebDeployPackage:
-    Description: S3 URL package to deploy web UI into WebServer EC2 instances.
+    Description: S3 key for package to deploy web UI into WebServer EC2 instances.
     Type: String
     MinLength: 1
+    Default: web.tar.gz
   PortNumber:
     Description: Port number to connect to the database broker process.
     Type: Number
@@ -174,6 +192,7 @@ Parameters:
     Type: String
   KeyPairName:
     ConstraintDescription: "Name of an existing EC2 key pair."
+    Description: EC2 key pair
     Type: "AWS::EC2::KeyPair::KeyName"
   PrivateSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
@@ -308,6 +327,8 @@ Resources:
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
+        DeployBucket:
+          Ref: DeployBucket
         EmailAddress:
           Ref: EmailAddress
         InstanceType:
@@ -334,6 +355,12 @@ Resources:
           Ref: MaxPort
         DBDeployPackage:
           Ref: DBDeployPackage
+        QSS3BucketName:
+          Ref: QSS3BucketName
+        QSS3BucketRegion:
+          Ref: QSS3BucketRegion
+        QSS3KeyPrefix:
+          Ref: QSS3KeyPrefix
   PASOEStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -343,6 +370,8 @@ Resources:
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
+        DeployBucket:
+          Ref: DeployBucket
         EmailAddress:
           Ref: EmailAddress
         InstanceType:
@@ -389,6 +418,12 @@ Resources:
             - Outputs.DBHostName2
         PASOEDeployPackage:
           Ref: PASOEDeployPackage
+        QSS3BucketName:
+          Ref: QSS3BucketName
+        QSS3BucketRegion:
+          Ref: QSS3BucketRegion
+        QSS3KeyPrefix:
+          Ref: QSS3KeyPrefix
   WebServerStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -398,6 +433,8 @@ Resources:
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
+        DeployBucket:
+          Ref: DeployBucket
         EmailAddress:
           Ref: EmailAddress
         InstanceType:
@@ -436,6 +473,12 @@ Resources:
             - Outputs.URL
         WebDeployPackage:
           Ref: WebDeployPackage
+        QSS3BucketName:
+          Ref: QSS3BucketName
+        QSS3BucketRegion:
+          Ref: QSS3BucketRegion
+        QSS3KeyPrefix:
+          Ref: QSS3KeyPrefix
 Outputs:
   WebURL:
     Description: "The web server URL"

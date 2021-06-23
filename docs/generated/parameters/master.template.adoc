@@ -11,10 +11,12 @@
 |Parameter label (name) |Default value|Description|Remote access CIDR
 (`RemoteAccessCIDR`)|`**__Requires input__**`|Allowed CIDR block for external SSH access|Web access CIDR
 (`WebAccessCIDR`)|`**__Requires input__**`|Allowed CIDR block for web access|Email address
-(`EmailAddress`)|`**__Requires input__**`|Email address for notification.|Database deploy package
-(`DBDeployPackage`)|`**__Requires input__**`|S3 URL package to deploy databases into EC2 instances.|PASOE deploy package
-(`PASOEDeployPackage`)|`**__Requires input__**`|S3 URL package to deploy databases into PASOE EC2 instances.|Web deploy package
-(`WebDeployPackage`)|`**__Requires input__**`|S3 URL package to deploy web UI into WebServer EC2 instances.
+(`EmailAddress`)|`**__Requires input__**`|Email address for notification.|S3 bucket with deployment assets
+(`DeployBucket`)|`**__Requires input__**`|S3 bucket containing deployment packages.|Region in which the deployment assets are stored
+(`DeployBucketRegion`)|`us-east-1`|Region in which the deployment packages are stored.|Database deploy package
+(`DBDeployPackage`)|`db.tar.gz`|S3 key for package to deploy databases into EC2 instances.|PASOE deploy package
+(`PASOEDeployPackage`)|`pas.tar.gz`|S3 key for package to deploy databases into PASOE EC2 instances.|Web deploy package
+(`WebDeployPackage`)|`web.tar.gz`|S3 key for package to deploy web UI into WebServer EC2 instances.
 |===
 .OpenEdge database configuration
 [width="100%",cols="16%,11%,73%",options="header",]
@@ -38,7 +40,7 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|EC2 key pair
-(`KeyPairName`)|`**__Requires input__**`|NO_DESCRIPTION|Bastion AMI OS
+(`KeyPairName`)|`**__Requires input__**`|EC2 key pair|Bastion AMI OS
 (`BastionAMIOS`)|`Amazon-Linux2-HVM`|Linux distribution for the AMI to be used for the bastion instances.|Bastion instance type
 (`BastionInstanceType`)|`t2.micro`|Amazon EC2 instance type for the bastion instances.|Instance type
 (`InstanceType`)|`t3a.medium`|EC2 instance type|Minimum instances in ASG
