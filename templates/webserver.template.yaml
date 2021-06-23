@@ -160,8 +160,9 @@ Resources:
           - s3:List*
           - s3:AbortMultipartUpload
           Resource:
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/${WebDeployPackage}*'
             - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}'
-            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/${WebDeployPackage}'
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/*'
       Roles:
         - Ref: S3AccessRole
   S3AccessProfile:
@@ -205,14 +206,14 @@ Resources:
   WebServerLaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
     Metadata:
-      "AWS::CloudFormation::Init":
-        config:
-          awscli:
-            commands:
-              00_set_default_s3_signature_version:
-                command: aws configure set default.s3.signature_version s3v4
-              01_set_default_region:
-                command: !Sub "aws configure set default.region '${AWS::Region}'"
+#      "AWS::CloudFormation::Init":
+#        config:
+#          awscli:
+#            commands:
+#              00_set_default_s3_signature_version:
+#                command: aws configure set default.s3.signature_version s3v4
+#              01_set_default_region:
+#                command: !Sub "aws configure set default.region '${DeployBucketRegion}'"
 #          files:
 #            "/install/app.tar.gz":
 #              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${WebDeployPackage}'
@@ -243,6 +244,12 @@ Resources:
             #WebServerLaunchConfig --configsets webserver_install
             #--region ${AWS::Region} || cfn_fail
 
+            # Install WebUI
+
+            mkdir -p /install
+
+            aws s3 cp ${DeployPackage} /install/app.tar.gz
+
             amazon-linux-extras install nginx1 -y
 
             systemctl enable nginx
@@ -252,12 +259,6 @@ Resources:
             mkdir -p /var/www/
 
             ln -s /usr/share/nginx/html/ /var/www/html
-
-            # Install WebUI
-
-            mkdir -p /install
-
-            curl ${DeployPackage} --output /install/app.tar.gz
 
             export OE_ENV=webserver
 
@@ -272,7 +273,8 @@ Resources:
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
 
             #[ $(qs_status) == 0 ] && cfn_success || cfn_fail
-          - DeployPackage: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${WebDeployPackage}'
+          - DeployRegion: !Ref DeployBucketRegion
+            DeployPackage: !Sub 's3://${DeployBucket}/${WebDeployPackage}'
   WebServerScaleUpPolicy:
     Type: 'AWS::AutoScaling::ScalingPolicy'
     Properties:

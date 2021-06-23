@@ -130,7 +130,7 @@ Resources:
           Principal:
             Service:
             - 'ec2.amazonaws.com'
-          Action: sts:AssumeRole      
+          Action: sts:AssumeRole
   S3AccessRolePolicy:
     Type: "AWS::IAM::Policy"
     Properties:
@@ -142,10 +142,11 @@ Resources:
           Action:
           - s3:Get*
           - s3:List*
-          - s3:AbortMultipartUpload   
+          - s3:AbortMultipartUpload
           Resource:
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/${DBDeployPackage}*'
             - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}'
-            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/${DBDeployPackage}'
+            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/*'
       Roles:
         - Ref: S3AccessRole
   S3AccessProfile:
@@ -157,17 +158,17 @@ Resources:
   SourceReplica:
     Type: "AWS::EC2::Instance"
     Metadata:
-      "AWS::CloudFormation::Init":
-        config:
-          awscli:
-            commands:
-              00_set_default_s3_signature_version:
-                command: aws configure set default.s3.signature_version s3v4
-              01_set_default_region:
-                command: !Sub "aws configure set default.region '${AWS::Region}'"
+#      "AWS::CloudFormation::Init":
+#        config:
+#          awscli:
+#            commands:
+#              00_set_default_s3_signature_version:
+#                command: aws configure set default.s3.signature_version s3v4
+#              01_set_default_region:
+#                command: !Sub "aws configure set default.region '${AWS::Region}'"
 #          files:
 #            "/install/app.tar.gz":
-#              source: !Sub 'https://s3.${DeployBucketRegion}.amazonaws.com/${DeployBucket}/${DBDeployPackage}'
+#              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'
 #              mode: '000755'
 #              owner: ec2-user
 #              group: ec2-user
@@ -197,9 +198,13 @@ Resources:
 
             # Setup Databases
 
+            aws configure set default.s3.signature_version s3v4
+
+            aws configure set default.region ${DeployRegion}'
+
             mkdir -p /install
 
-            curl ${DeployPackage} --output /install/app.tar.gz
+            aws s3 cp ${DeployPackage} /install/app.tar.gz
 
             export OE_ENV=db0
 
@@ -209,24 +214,25 @@ Resources:
 
             /install/app/deploy.sh
 
-          - DeployPackage: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'
+          - DeployRegion: !Ref DeployBucketRegion
+            DeployPackage: !Sub 's3://${DeployBucket}/${DBDeployPackage}'
   TargetReplicaOne:
     Type: "AWS::EC2::Instance"
     Metadata:
-      "AWS::CloudFormation::Init":
-        config:
-          awscli:
-            commands:
-              00_set_default_s3_signature_version:
-                command: aws configure set default.s3.signature_version s3v4
-              01_set_default_region:
-                command: !Sub "aws configure set default.region '${AWS::Region}'"
+#      "AWS::CloudFormation::Init":
+#        config:
+#          awscli:
+#            commands:
+#              00_set_default_s3_signature_version:
+#                command: aws configure set default.s3.signature_version s3v4
+#              01_set_default_region:
+#                command: !Sub "aws configure set default.region '${DeployBucketRegion}'"
 #          files:
 #            "/install/app.tar.gz":
 #              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'
 #              mode: '000755'
 #              owner: ec2-user
-#             group: ec2-user
+#              group: ec2-user
 #              authentication: S3AccessCreds
       'AWS::CloudFormation::Authentication':
         S3AccessCreds:
@@ -255,7 +261,7 @@ Resources:
 
             mkdir -p /install
 
-            curl ${DeployPackage} --output /install/app.tar.gz
+            aws s3 cp ${DeployPackage} /install/app.tar.gz
 
             OE_ENV=db1
 
@@ -267,21 +273,22 @@ Resources:
 
             /install/app/deploy.sh
 
-          - DeployPackage: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'     
+          - DeployRegion: !Ref DeployBucketRegion
+            DeployPackage: !Sub 's3://${DeployBucket}/${DBDeployPackage}'   
   TargetReplicaTwo:
     Type: "AWS::EC2::Instance"
     Metadata:
-      "AWS::CloudFormation::Init":
-        config:
-          awscli:
-            commands:
-              00_set_default_s3_signature_version:
-                command: aws configure set default.s3.signature_version s3v4
-              01_set_default_region:
-                command: !Sub "aws configure set default.region '${AWS::Region}'"
+#      "AWS::CloudFormation::Init":
+#        config:
+#          awscli:
+#            commands:
+#              00_set_default_s3_signature_version:
+#                command: aws configure set default.s3.signature_version s3v4
+#              01_set_default_region:
+#                command: !Sub "aws configure set default.region '${AWS::Region}'"
 #          files:
 #            "/install/app.tar.gz":
-#              source: !Sub 'https://s3.${DeployBucketRegion}.amazonaws.com/${DeployBucket}/${DBDeployPackage}'
+#              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'
 #              mode: '000755'
 #              owner: ec2-user
 #              group: ec2-user
@@ -313,7 +320,7 @@ Resources:
 
             mkdir -p /install
 
-            curl ${DeployPackage} --output /install/app.tar.gz
+            aws s3 cp ${DeployPackage} /install/app.tar.gz
 
             OE_ENV=db2
 
@@ -325,7 +332,8 @@ Resources:
 
             /install/app/deploy.sh
 
-          - DeployPackage: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'     
+          - DeployRegion: !Ref DeployBucketRegion
+            DeployPackage: !Sub 's3://${DeployBucket}/${DBDeployPackage}'
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
