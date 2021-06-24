@@ -336,6 +336,11 @@ Resources:
             DeployPackage: !Sub 's3://${DeployBucket}/${DBDeployPackage}'
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: "Standard Amazon practice"
     Properties:
       GroupDescription: Enable access to the Database Instance (SSH, DB)
       SecurityGroupIngress:
