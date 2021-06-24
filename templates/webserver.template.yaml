@@ -353,6 +353,11 @@ Resources:
       VpcId: !Ref VPCID
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: "Standard Amazon practice"
     Properties:
       GroupDescription: Enable access to the WebServer EC2 Instance
       SecurityGroupIngress:
@@ -367,6 +372,11 @@ Resources:
       VpcId: !Ref VPCID
   ELBWebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: "Standard Amazon practice"
     Properties:
       GroupDescription: Enable HTTP to the load balancer 
       SecurityGroupIngress:
