@@ -346,6 +346,11 @@ Resources:
       VpcId: !Ref VPCID
   PASOESecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: "Standard Amazon practice"
     Properties:
       GroupDescription: Enable access to the PASOE EC2 Instance
       SecurityGroupIngress:
@@ -364,6 +369,11 @@ Resources:
       VpcId: !Ref VPCID
   ELBPASOESecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: "Standard Amazon practice"
     Properties:
       GroupDescription: Enable HTTP to the load balancer
       SecurityGroupIngress:
