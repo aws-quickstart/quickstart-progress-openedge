@@ -4,6 +4,10 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: "Deploys a three-tier Progress OpenEdge stack into a new VPC (qs-1qtcokh3l)"
 
 Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - W9006
   QuickStartDocumentation:
     EntrypointName: "Launch into a new VPC"
   LICENSE: Apache License Version 2.0
@@ -329,6 +333,8 @@ Resources:
       Parameters:
         DeployBucket:
           Ref: DeployBucket
+        DeployBucketRegion:
+          Ref: DeployBucketRegion
         EmailAddress:
           Ref: EmailAddress
         InstanceType:
@@ -355,12 +361,6 @@ Resources:
           Ref: MaxPort
         DBDeployPackage:
           Ref: DBDeployPackage
-        QSS3BucketName:
-          Ref: QSS3BucketName
-        QSS3BucketRegion:
-          Ref: QSS3BucketRegion
-        QSS3KeyPrefix:
-          Ref: QSS3KeyPrefix
   PASOEStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -372,6 +372,8 @@ Resources:
       Parameters:
         DeployBucket:
           Ref: DeployBucket
+        DeployBucketRegion:
+          Ref: DeployBucketRegion
         EmailAddress:
           Ref: EmailAddress
         InstanceType:
@@ -418,12 +420,6 @@ Resources:
             - Outputs.DBHostName2
         PASOEDeployPackage:
           Ref: PASOEDeployPackage
-        QSS3BucketName:
-          Ref: QSS3BucketName
-        QSS3BucketRegion:
-          Ref: QSS3BucketRegion
-        QSS3KeyPrefix:
-          Ref: QSS3KeyPrefix
   WebServerStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -435,6 +431,8 @@ Resources:
       Parameters:
         DeployBucket:
           Ref: DeployBucket
+        DeployBucketRegion:
+          Ref: DeployBucketRegion
         EmailAddress:
           Ref: EmailAddress
         InstanceType:
@@ -473,12 +471,6 @@ Resources:
             - Outputs.URL
         WebDeployPackage:
           Ref: WebDeployPackage
-        QSS3BucketName:
-          Ref: QSS3BucketName
-        QSS3BucketRegion:
-          Ref: QSS3BucketRegion
-        QSS3KeyPrefix:
-          Ref: QSS3KeyPrefix
 Outputs:
   WebURL:
     Description: "The web server URL"

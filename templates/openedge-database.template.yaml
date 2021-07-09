@@ -1,6 +1,13 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   OpenEdge Database infrastructure with Replication Set (qs-1rus69tf0)
+Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - W9002
+        - W9003
+        - W9006
 Parameters:
   DeployBucket:
     Description: S3 bucket containing deployment packages.
@@ -33,7 +40,7 @@ Parameters:
     ConstraintDescription: Must be a valid email id.
   KeyPairName:
     Type: "AWS::EC2::KeyPair::KeyName"
-    ConstraintDescription: Name of an existing EC2 KeyPair.
+    Description: Name of an existing EC2 KeyPair.
   PrivateSubnet1ID:
     Description: Private Subnet Id 1
     Type: "AWS::EC2::Subnet::Id"
@@ -54,22 +61,6 @@ Parameters:
     Description: Use Maximum Dynamic Server (-minport) number to specify the highest port number in a specified range of port numbers accessible to a client.
     Type: Number
     Default: 2000
-  QSS3BucketName:
-    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
-    ConstraintDescription: "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
-    Default: aws-quickstart
-    Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
-    Type: String
-  QSS3BucketRegion:
-    Default: 'us-east-1'
-    Description: "AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. If you use your own bucket, specify that value."
-    Type: String
-  QSS3KeyPrefix:
-    AllowedPattern: "^[0-9a-zA-Z-/]*$"
-    ConstraintDescription: "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
-    Default: quickstart-progress-openedge/
-    Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
-    Type: String
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -200,7 +191,7 @@ Resources:
 
             aws configure set default.s3.signature_version s3v4
 
-            aws configure set default.region ${DeployRegion}'
+            aws configure set default.region ${DeployRegion}
 
             mkdir -p /install
 
@@ -261,6 +252,10 @@ Resources:
 
             mkdir -p /install
 
+            aws configure set default.s3.signature_version s3v4
+
+            aws configure set default.region ${DeployRegion}
+
             aws s3 cp ${DeployPackage} /install/app.tar.gz
 
             OE_ENV=db1
@@ -319,6 +314,10 @@ Resources:
             # Setup Databases
 
             mkdir -p /install
+
+            aws configure set default.s3.signature_version s3v4
+
+            aws configure set default.region ${DeployRegion}
 
             aws s3 cp ${DeployPackage} /install/app.tar.gz
 
