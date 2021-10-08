@@ -146,85 +146,9 @@ Resources:
       Path: /
       Roles:
         - !Ref S3AccessRole
-  SourceReplica:
-    Type: "AWS::EC2::Instance"
-    Metadata:
-#      "AWS::CloudFormation::Init":
-#        config:
-#          awscli:
-#            commands:
-#              00_set_default_s3_signature_version:
-#                command: aws configure set default.s3.signature_version s3v4
-#              01_set_default_region:
-#                command: !Sub "aws configure set default.region '${AWS::Region}'"
-#          files:
-#            "/install/app.tar.gz":
-#              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'
-#              mode: '000755'
-#              owner: ec2-user
-#              group: ec2-user
-#              authentication: S3AccessCreds
-      'AWS::CloudFormation::Authentication':
-        S3AccessCreds:
-          type: S3
-          roleName: !Ref S3AccessRole
-    Properties:
-      IamInstanceProfile: !Ref S3AccessProfile
-      ImageId: !FindInMap
-        - AWSAMIRegionMap
-        - !Ref 'AWS::Region'
-        - OEDBAMZNLINUX2
-      InstanceType: !Ref InstanceType
-      SubnetId: !Ref PrivateSubnet1ID
-      SecurityGroupIds:
-        - !Ref InstanceSecurityGroup
-      Tags:
-        - Key: Name
-          Value: db0
-      KeyName: !Ref KeyPairName
-      UserData: !Base64 
-        'Fn::Sub':
-          - >
-            #!/bin/bash -x
-
-            # Setup Databases
-
-            aws configure set default.s3.signature_version s3v4
-
-            aws configure set default.region ${DeployRegion}
-
-            mkdir -p /install
-
-            aws s3 cp ${DeployPackage} /install/app.tar.gz
-
-            export OE_ENV=db0
-
-            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
-
-            tar xCf /install /install/app.tar.gz
-
-            /install/app/deploy.sh
-
-          - DeployRegion: !Ref DeployBucketRegion
-            DeployPackage: !Sub 's3://${DeployBucket}/${DBDeployPackage}'
   TargetReplicaOne:
     Type: "AWS::EC2::Instance"
     Metadata:
-#      "AWS::CloudFormation::Init":
-#        config:
-#          awscli:
-#            commands:
-#              00_set_default_s3_signature_version:
-#                command: aws configure set default.s3.signature_version s3v4
-#              01_set_default_region:
-#                command: !Sub "aws configure set default.region '${DeployBucketRegion}'"
-#          files:
-#            "/install/app.tar.gz":
-#              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'
-#              mode: '000755'
-#              owner: ec2-user
-#              group: ec2-user
-#              authentication: S3AccessCreds
       'AWS::CloudFormation::Authentication':
         S3AccessCreds:
           type: S3
@@ -273,21 +197,6 @@ Resources:
   TargetReplicaTwo:
     Type: "AWS::EC2::Instance"
     Metadata:
-#      "AWS::CloudFormation::Init":
-#        config:
-#          awscli:
-#            commands:
-#              00_set_default_s3_signature_version:
-#                command: aws configure set default.s3.signature_version s3v4
-#              01_set_default_region:
-#                command: !Sub "aws configure set default.region '${AWS::Region}'"
-#          files:
-#            "/install/app.tar.gz":
-#              source: !Sub 'https://${DeployBucket}.s3.${DeployBucketRegion}.${AWS::URLSuffix}/${DBDeployPackage}'
-#              mode: '000755'
-#              owner: ec2-user
-#              group: ec2-user
-#              authentication: S3AccessCreds
       'AWS::CloudFormation::Authentication':
         S3AccessCreds:
           type: S3
@@ -333,6 +242,66 @@ Resources:
 
           - DeployRegion: !Ref DeployBucketRegion
             DeployPackage: !Sub 's3://${DeployBucket}/${DBDeployPackage}'
+  SourceReplica:
+    Type: "AWS::EC2::Instance"
+    Metadata:
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref S3AccessRole
+    Properties:
+      IamInstanceProfile: !Ref S3AccessProfile
+      ImageId: !FindInMap
+        - AWSAMIRegionMap
+        - !Ref 'AWS::Region'
+        - OEDBAMZNLINUX2
+      InstanceType: !Ref InstanceType
+      SubnetId: !Ref PrivateSubnet1ID
+      SecurityGroupIds:
+        - !Ref InstanceSecurityGroup
+      Tags:
+        - Key: Name
+          Value: db0
+      KeyName: !Ref KeyPairName
+      UserData: !Base64 
+        'Fn::Sub':
+          - >
+            #!/bin/bash -x
+
+            # Setup Databases
+
+            aws configure set default.s3.signature_version s3v4
+
+            aws configure set default.region ${DeployRegion}
+
+            mkdir -p /install
+
+            aws s3 cp ${DeployPackage} /install/app.tar.gz
+
+            export OE_ENV=db0
+            
+            export DBHostName=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
+
+            export DBHostName1=${DBHostName1}
+            
+            export DBHostName2=${DBHostName2}            
+
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
+
+            tar xCf /install /install/app.tar.gz
+
+            /install/app/deploy.sh
+
+          - DeployRegion: !Ref DeployBucketRegion
+            DeployPackage: !Sub 's3://${DeployBucket}/${DBDeployPackage}'
+            DBHostName1:
+              Fn::GetAtt:
+                - TargetReplicaOne
+                - PrivateIp
+            DBHostName2:
+              Fn::GetAtt:
+                - TargetReplicaTwo
+                - PrivateIp            
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Metadata:
