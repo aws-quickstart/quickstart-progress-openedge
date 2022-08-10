@@ -82,43 +82,43 @@ Mappings:
     AMI:
       PASOEAMZNLINUX2: Amazon Linux 2 AMI with PAS for OpenEdge
     af-south-1:
-      PASOEAMZNLINUX2: ami-098c6679f18127cf3
+      PASOEAMZNLINUX2: ami-057a0295f14ae2dbe
     ap-east-1:
-      PASOEAMZNLINUX2: ami-04399f1af4d4a757b
+      PASOEAMZNLINUX2: ami-0146ee721dff8d23c
     ap-northeast-1:
-      PASOEAMZNLINUX2: ami-0a0dfc0ee2000117b
+      PASOEAMZNLINUX2: ami-05016bf13ee342bb7
     ap-northeast-2:
-      PASOEAMZNLINUX2: ami-07e1aa13a97050236
+      PASOEAMZNLINUX2: ami-0f28fbd1a32d3b7a5
     ap-south-1:
-      PASOEAMZNLINUX2: ami-0244e02bcccca2ed5
+      PASOEAMZNLINUX2: ami-01949f4c78b61eaec
     ap-southeast-1:
-      PASOEAMZNLINUX2: ami-0b809c5b46d894417
+      PASOEAMZNLINUX2: ami-031115eff062dd3e6
     ap-southeast-2:
-      PASOEAMZNLINUX2: ami-0679d6ad14b177593
+      PASOEAMZNLINUX2: ami-0666cbd8ca3a73698
     ca-central-1:
-      PASOEAMZNLINUX2: ami-0cfc7393b8902b00a
+      PASOEAMZNLINUX2: ami-0a06948cfe9d941e7
     eu-central-1:
-      PASOEAMZNLINUX2: ami-062513d4f53ab87bd
+      PASOEAMZNLINUX2: ami-0e14b0c5e1ab43f47
     eu-north-1:
-      PASOEAMZNLINUX2: ami-0b2e979fa69aaac7d
+      PASOEAMZNLINUX2: ami-06fc7f880b4469c16
     eu-south-1:
-      PASOEAMZNLINUX2: ami-047e5eacedab72bfd
+      PASOEAMZNLINUX2: ami-0bc2dd222eaddde21
     eu-west-1:
-      PASOEAMZNLINUX2: ami-03ee720fa13f6e28f
+      PASOEAMZNLINUX2: ami-09bf9c3b0493c9569
     eu-west-2:
-      PASOEAMZNLINUX2: ami-01839ea9d30f3961d
+      PASOEAMZNLINUX2: ami-04516eaa57902b285
     eu-west-3:
-      PASOEAMZNLINUX2: ami-06041f62451752841
+      PASOEAMZNLINUX2: ami-008002eb0bb0f59a2
     sa-east-1:
-      PASOEAMZNLINUX2: ami-038a50d32ee4afc8a
+      PASOEAMZNLINUX2: ami-09155f7b1be32f264
     us-east-1:
-      PASOEAMZNLINUX2: ami-0ab388d63653b92e9
+      PASOEAMZNLINUX2: ami-0b3bc3a12445d4c00
     us-east-2:
-      PASOEAMZNLINUX2: ami-0de6207a1f6a49fff
+      PASOEAMZNLINUX2: ami-0723f033c5d7a9400
     us-west-1:
-      PASOEAMZNLINUX2: ami-0be6bf5e85a74bb47
+      PASOEAMZNLINUX2: ami-0e1f3d4ed8ae048a4
     us-west-2:
-      PASOEAMZNLINUX2: ami-0291c076833b761a2
+      PASOEAMZNLINUX2: ami-08ca23fed18d013fa
 Resources:
   NotificationTopic:
     Type: 'AWS::SNS::Topic'
