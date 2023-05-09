@@ -24,13 +24,57 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t3a.medium
+    Default: t3.medium
     AllowedValues:
-      - t3a.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.medium
       - t3a.large
       - t3a.xlarge
       - t3a.2xlarge
+	  - m6i.xlarge
+	  - m6i.2xlarge
+	  - m6i.4xlarge
+	  - m6i.8xlarge
+	  - m6i.12xlarge
+	  - m6i.16xlarge
+	  - m6i.24xlarge
+	  - m6i.32xlarge
+	  - m6id.xlarge
+	  - m6id.2xlarge
+	  - m6id.4xlarge
+	  - m6id.8xlarge
+	  - m6id.12xlarge
+	  - m6id.16xlarge
+	  - m6id.24xlarge
+	  - m6id.32xlarge
+	  - m6in.xlarge
+	  - m6in.2xlarge
+	  - m6in.4xlarge
+	  - m6in.8xlarge
+	  - m6in.12xlarge
+	  - m6in.16xlarge
+	  - m6in.24xlarge
+	  - m6in.32xlarge
+	  - m6idn.xlarge
+	  - m6idn.2xlarge
+	  - m6idn.4xlarge
+	  - m6idn.8xlarge
+	  - m6idn.12xlarge
+	  - m6idn.16xlarge
+	  - m6idn.24xlarge
+	  - m6idn.32xlarge
+	  - m6a.xlarge
+	  - m6a.2xlarge
+	  - m6a.4xlarge
+	  - m6a.8xlarge
+	  - m6a.12xlarge
+	  - m6a.16xlarge
+	  - m6a.24xlarge
+	  - m6a.32xlarge
+	  - m6a.48xlarge
     ConstraintDescription: must be a valid EC2 instance type.
   EmailAddress:
     Description: Email Address for notification
@@ -64,7 +108,7 @@ Parameters:
     Type: 'AWS::EC2::VPC::Id'
   PASOEURL:
     Description: URL to ELB to access PASOE
-    Type: String    
+    Type: String
   MinScalingInstances:
     Description: Minimum number of EC2 instances in ASG
     Type: String
@@ -217,14 +261,14 @@ Resources:
     Properties:
       IamInstanceProfile: !Ref S3AccessProfile
       KeyName: !Ref KeyPairName
-      ImageId: !FindInMap 
+      ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
         - AmazonLinux2AMI
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref WebServerSecurityGroup
-      UserData: !Base64 
+      UserData: !Base64
         'Fn::Sub':
           - >
             #!/bin/bash -x
@@ -371,7 +415,7 @@ Resources:
           - id: F1000
             reason: "Standard Amazon practice"
     Properties:
-      GroupDescription: Enable HTTP to the load balancer 
+      GroupDescription: Enable HTTP to the load balancer
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -381,10 +425,10 @@ Resources:
 Outputs:
   URL:
     Description: The URL of WebServer
-    Value: !Join 
+    Value: !Join
       - ''
       - - 'http://'
-        - !GetAtt 
+        - !GetAtt
           - ApplicationLoadBalancer
           - DNSName
 
