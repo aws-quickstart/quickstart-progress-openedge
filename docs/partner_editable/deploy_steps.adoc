@@ -10,8 +10,8 @@ ifdef::marketplace_subscription[]
 
 This Quick Start requires a subscription to the AMI for {partner-product-name} in AWS Marketplace.
 
-. {https://aws.amazon.com/marketplace/pp/B08CRKD9MY?qid=1594739011658&sr=0-3&ref_=srh_res_product_title}[Open the page for the Progress Application Server AMI in AWS Marketplace], and then choose *Continue to Subscribe*.
-. {https://aws.amazon.com/marketplace/pp/B08CS3KFH5?qid=1594739011658&sr=0-1&ref_=srh_res_product_title}[Open the page for the Progress OpenEdge RDBMS AMI in AWS Marketplace], and then choose *Continue to Subscribe*.
+. Open the https://aws.amazon.com/marketplace/pp/B08CRKD9MY?qid=1594739011658&sr=0-3&ref_=srh_res_product_title[Progress Application Server (PAS) for OpenEdge^] page in AWS Marketplace, and then choose *Continue to Subscribe*.
+. Open the https://aws.amazon.com/marketplace/pp/B08CS3KFH5?qid=1594739011658&sr=0-1&ref_=srh_res_product_title[Progress OpenEdge RDBMS^] page in AWS Marketplace, and then choose *Continue to Subscribe*.
 . Review the terms and conditions for software usage, and then choose *Accept Terms*. +
   A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the https://aws.amazon.com/marketplace/help/200799470[AWS Marketplace documentation^].
 
