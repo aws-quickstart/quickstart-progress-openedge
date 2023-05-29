@@ -120,47 +120,43 @@ Mappings:
     AMI:
       AmazonLinux2AMI: Amazon Linux 2 AMI
     af-south-1:
-      AmazonLinux2AMI: ami-0ec47ddb564d75b64
+      AmazonLinux2AMI: ami-0c9919139cb112e21
     ap-east-1:
-      AmazonLinux2AMI: ami-49bbfa38
+      AmazonLinux2AMI: ami-0f80f09f43db27f08
     ap-northeast-1:
-      AmazonLinux2AMI: ami-0a1c2ec61571737db
+      AmazonLinux2AMI: ami-07c2a88388bb80eb0
     ap-northeast-2:
-      AmazonLinux2AMI: ami-01af223aa7f274198
-    ap-northeast-3:
-      AmazonLinux2AMI: ami-053e733f02a27d9fc
+      AmazonLinux2AMI: ami-073858dcf4e30e586
     ap-south-1:
-      AmazonLinux2AMI: ami-0447a12f28fddb066
+      AmazonLinux2AMI: ami-078efad6f7ec18b8a
     ap-southeast-1:
-      AmazonLinux2AMI: ami-0615132a0f36d24f4
+      AmazonLinux2AMI: ami-06ebb7936bfa62864
     ap-southeast-2:
-      AmazonLinux2AMI: ami-088ff0e3bde7b3fdf
+      AmazonLinux2AMI: ami-0da25504d467cb134
     ca-central-1:
-      AmazonLinux2AMI: ami-0f75c2980c6a5851d
+      AmazonLinux2AMI: ami-0cbfa6bba4589dcbb
     eu-central-1:
-      AmazonLinux2AMI: ami-0a02ee601d742e89f
+      AmazonLinux2AMI: ami-08e415170f52d1657
     eu-north-1:
-      AmazonLinux2AMI: ami-04697c9bb5d6135a2
+      AmazonLinux2AMI: ami-042bae94a952c9eba
     eu-south-1:
-      AmazonLinux2AMI: ami-0f9b9a8cf93d838d0
+      AmazonLinux2AMI: ami-08226db9ffa402896
     eu-west-1:
-      AmazonLinux2AMI: ami-0ea3405d2d2522162
+      AmazonLinux2AMI: ami-0e23c576dacf2e3df
     eu-west-2:
-      AmazonLinux2AMI: ami-032598fcc7e9d1c7a
+      AmazonLinux2AMI: ami-0a6006bac3b9bb8d3
     eu-west-3:
-      AmazonLinux2AMI: ami-01c72e187b357583b
-    me-south-1:
-      AmazonLinux2AMI: ami-01b31491b74045c0c
+      AmazonLinux2AMI: ami-0c39e8f767a5e89c8
     sa-east-1:
-      AmazonLinux2AMI: ami-0477a95397a9154b3
+      AmazonLinux2AMI: ami-0c4bcf0e0554b7eb9
     us-east-1:
-      AmazonLinux2AMI: ami-09d95fab7fff3776c
+      AmazonLinux2AMI: ami-0bef6cc322bfff646
     us-east-2:
-      AmazonLinux2AMI: ami-026dea5602e368e96
+      AmazonLinux2AMI: ami-05842f1afbf311a43
     us-west-1:
-      AmazonLinux2AMI: ami-04e59c05167ea7bd5
+      AmazonLinux2AMI: ami-04669a22aad391419
     us-west-2:
-      AmazonLinux2AMI: ami-0e34e7b9ca0ace12d
+      AmazonLinux2AMI: ami-03c7c1f17ee073747
 Resources:
   NotificationTopic:
     Type: 'AWS::SNS::Topic'
