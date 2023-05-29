@@ -32,6 +32,7 @@ Parameters:
       - t3a.large
       - t3a.xlarge
       - t3a.2xlarge
+	  - m6i.large
 	  - m6i.xlarge
 	  - m6i.2xlarge
 	  - m6i.4xlarge
@@ -40,6 +41,7 @@ Parameters:
 	  - m6i.16xlarge
 	  - m6i.24xlarge
 	  - m6i.32xlarge
+	  - m6id.large
 	  - m6id.xlarge
 	  - m6id.2xlarge
 	  - m6id.4xlarge
@@ -48,6 +50,7 @@ Parameters:
 	  - m6id.16xlarge
 	  - m6id.24xlarge
 	  - m6id.32xlarge
+	  - m6in.large
 	  - m6in.xlarge
 	  - m6in.2xlarge
 	  - m6in.4xlarge
@@ -56,6 +59,7 @@ Parameters:
 	  - m6in.16xlarge
 	  - m6in.24xlarge
 	  - m6in.32xlarge
+	  - m6idn.large
 	  - m6idn.xlarge
 	  - m6idn.2xlarge
 	  - m6idn.4xlarge
@@ -64,6 +68,7 @@ Parameters:
 	  - m6idn.16xlarge
 	  - m6idn.24xlarge
 	  - m6idn.32xlarge
+	  - m6a.large
 	  - m6a.xlarge
 	  - m6a.2xlarge
 	  - m6a.4xlarge
@@ -114,6 +119,7 @@ Parameters:
 	  - r6i.16xlarge
 	  - r6i.24xlarge
 	  - r6i.32xlarge
+	  - r6id.large
 	  - r6id.xlarge
 	  - r6id.2xlarge
 	  - r6id.4xlarge
@@ -122,6 +128,7 @@ Parameters:
 	  - r6id.16xlarge
 	  - r6id.24xlarge
 	  - r6id.32xlarge
+	  - r6in.large
 	  - r6in.xlarge
 	  - r6in.2xlarge
 	  - r6in.4xlarge
@@ -130,6 +137,7 @@ Parameters:
 	  - r6in.16xlarge
 	  - r6in.24xlarge
 	  - r6in.32xlarge
+	  - r6idn.large
 	  - r6idn.xlarge
 	  - r6idn.2xlarge
 	  - r6idn.4xlarge
@@ -138,6 +146,7 @@ Parameters:
 	  - r6idn.16xlarge
 	  - r6idn.24xlarge
 	  - r6idn.32xlarge
+	  - r6a.large
 	  - r6a.xlarge
 	  - r6a.2xlarge
 	  - r6a.4xlarge
