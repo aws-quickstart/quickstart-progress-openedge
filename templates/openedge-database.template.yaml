@@ -111,6 +111,7 @@ Parameters:
 	  - c6a.24xlarge
 	  - c6a.32xlarge
 	  - c6a.48xlarge
+	  - r6i.large
 	  - r6i.xlarge
 	  - r6i.2xlarge
 	  - r6i.4xlarge
