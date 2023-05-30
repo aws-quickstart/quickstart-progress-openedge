@@ -24,13 +24,139 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t3a.medium
+    Default: t3.large
     AllowedValues:
-      - t3a.small
-      - t3a.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.large
       - t3a.xlarge
       - t3a.2xlarge
+	  - m6i.large
+	  - m6i.xlarge
+	  - m6i.2xlarge
+	  - m6i.4xlarge
+	  - m6i.8xlarge
+	  - m6i.12xlarge
+	  - m6i.16xlarge
+	  - m6i.24xlarge
+	  - m6i.32xlarge
+	  - m6id.large
+	  - m6id.xlarge
+	  - m6id.2xlarge
+	  - m6id.4xlarge
+	  - m6id.8xlarge
+	  - m6id.12xlarge
+	  - m6id.16xlarge
+	  - m6id.24xlarge
+	  - m6id.32xlarge
+	  - m6in.large
+	  - m6in.xlarge
+	  - m6in.2xlarge
+	  - m6in.4xlarge
+	  - m6in.8xlarge
+	  - m6in.12xlarge
+	  - m6in.16xlarge
+	  - m6in.24xlarge
+	  - m6in.32xlarge
+	  - m6idn.large
+	  - m6idn.xlarge
+	  - m6idn.2xlarge
+	  - m6idn.4xlarge
+	  - m6idn.8xlarge
+	  - m6idn.12xlarge
+	  - m6idn.16xlarge
+	  - m6idn.24xlarge
+	  - m6idn.32xlarge
+	  - m6a.large
+	  - m6a.xlarge
+	  - m6a.2xlarge
+	  - m6a.4xlarge
+	  - m6a.8xlarge
+	  - m6a.12xlarge
+	  - m6a.16xlarge
+	  - m6a.24xlarge
+	  - m6a.32xlarge
+	  - m6a.48xlarge
+	  - c6i.xlarge
+	  - c6i.2xlarge
+	  - c6i.4xlarge
+	  - c6i.8xlarge
+	  - c6i.12xlarge
+	  - c6i.16xlarge
+	  - c6i.24xlarge
+	  - c6i.32xlarge
+	  - c6id.xlarge
+	  - c6id.2xlarge
+	  - c6id.4xlarge
+	  - c6id.8xlarge
+	  - c6id.12xlarge
+	  - c6id.16xlarge
+	  - c6id.24xlarge
+	  - c6id.32xlarge
+	  - c6in.xlarge
+	  - c6in.2xlarge
+	  - c6in.4xlarge
+	  - c6in.8xlarge
+	  - c6in.12xlarge
+	  - c6in.16xlarge
+	  - c6in.24xlarge
+	  - c6in.32xlarge
+	  - c6a.xlarge
+	  - c6a.2xlarge
+	  - c6a.4xlarge
+	  - c6a.8xlarge
+	  - c6a.12xlarge
+	  - c6a.16xlarge
+	  - c6a.24xlarge
+	  - c6a.32xlarge
+	  - c6a.48xlarge
+	  - r6i.large
+	  - r6i.xlarge
+	  - r6i.2xlarge
+	  - r6i.4xlarge
+	  - r6i.8xlarge
+	  - r6i.12xlarge
+	  - r6i.16xlarge
+	  - r6i.24xlarge
+	  - r6i.32xlarge
+	  - r6id.large
+	  - r6id.xlarge
+	  - r6id.2xlarge
+	  - r6id.4xlarge
+	  - r6id.8xlarge
+	  - r6id.12xlarge
+	  - r6id.16xlarge
+	  - r6id.24xlarge
+	  - r6id.32xlarge
+	  - r6in.large
+	  - r6in.xlarge
+	  - r6in.2xlarge
+	  - r6in.4xlarge
+	  - r6in.8xlarge
+	  - r6in.12xlarge
+	  - r6in.16xlarge
+	  - r6in.24xlarge
+	  - r6in.32xlarge
+	  - r6idn.large
+	  - r6idn.xlarge
+	  - r6idn.2xlarge
+	  - r6idn.4xlarge
+	  - r6idn.8xlarge
+	  - r6idn.12xlarge
+	  - r6idn.16xlarge
+	  - r6idn.24xlarge
+	  - r6idn.32xlarge
+	  - r6a.large
+	  - r6a.xlarge
+	  - r6a.2xlarge
+	  - r6a.4xlarge
+	  - r6a.8xlarge
+	  - r6a.12xlarge
+	  - r6a.16xlarge
+	  - r6a.24xlarge
+	  - r6a.32xlarge
+	  - r6a.48xlarge
     ConstraintDescription: must be a valid EC2 instance type.
   EmailAddress:
     Description: Email Address for notification
@@ -66,43 +192,43 @@ Mappings:
     AMI:
       OEDBAMZNLINUX2: Amazon Linux 2 AMI with OpenEdge Database
     af-south-1:
-      OEDBAMZNLINUX2: ami-01c73636859549498
+      OEDBAMZNLINUX2: ami-02b75f15c4cef540b
     ap-east-1:
-      OEDBAMZNLINUX2: ami-0cdeb044c645691b4
+      OEDBAMZNLINUX2: ami-0e7f1dfd20e0231c3
     ap-northeast-1:
-      OEDBAMZNLINUX2: ami-05e8c709fe67beee8
+      OEDBAMZNLINUX2: ami-085a33252f1fee74e
     ap-northeast-2:
-      OEDBAMZNLINUX2: ami-0d261084b83e2e196
+      OEDBAMZNLINUX2: ami-063b65912dda0e599
     ap-south-1:
-      OEDBAMZNLINUX2: ami-0580bb8aa5138f189
+      OEDBAMZNLINUX2: ami-0bcf9f77667f96966
     ap-southeast-1:
-      OEDBAMZNLINUX2: ami-05edf8978e91a8bf0
+      OEDBAMZNLINUX2: ami-07f9924758aab9a9f
     ap-southeast-2:
-      OEDBAMZNLINUX2: ami-0f55f3a20ef29d9c5
+      OEDBAMZNLINUX2: ami-0193dcf39b9412dc0
     ca-central-1:
-      OEDBAMZNLINUX2: ami-0554ab9aaa47d698d
+      OEDBAMZNLINUX2: ami-0931351a82f0fafcf
     eu-central-1:
-      OEDBAMZNLINUX2: ami-002da9196db239cc7
+      OEDBAMZNLINUX2: ami-0f57299ef84865a60
     eu-north-1:
-      OEDBAMZNLINUX2: ami-0d410adb3583ce292
+      OEDBAMZNLINUX2: ami-0eb6d8e034c3b26c9
     eu-south-1:
-      OEDBAMZNLINUX2: ami-096c1ef55c7fd8a06
+      OEDBAMZNLINUX2: ami-005303d2d2ca3b842
     eu-west-1:
-      OEDBAMZNLINUX2: ami-059729eb93ef6b666
+      OEDBAMZNLINUX2: ami-064aba9f09a2f0773
     eu-west-2:
-      OEDBAMZNLINUX2: ami-07e80e872a2484bce
+      OEDBAMZNLINUX2: ami-09c70c861bd6b80b0
     eu-west-3:
-      OEDBAMZNLINUX2: ami-014ec01d563109e34
+      OEDBAMZNLINUX2: ami-0e4dfcd87921f1198
     sa-east-1:
-      OEDBAMZNLINUX2: ami-0babff01c9aae4922
+      OEDBAMZNLINUX2: ami-0f1f1431655455b8d
     us-east-1:
-      OEDBAMZNLINUX2: ami-0e12666de7d0176d6
+      OEDBAMZNLINUX2: ami-079ae64665ebf4925
     us-east-2:
-      OEDBAMZNLINUX2: ami-03d9dbf1db41f13bb
+      OEDBAMZNLINUX2: ami-01bb7ffe18ddf4fe3
     us-west-1:
-      OEDBAMZNLINUX2: ami-0b192a6ab2f6ea4d6
+      OEDBAMZNLINUX2: ami-0bc216181300e667e
     us-west-2:
-      OEDBAMZNLINUX2: ami-0573c0826395ec74d
+      OEDBAMZNLINUX2: ami-0c99cc3a6bede73e6
 Resources:
   NotificationTopic:
     Type: "AWS::SNS::Topic"
@@ -113,7 +239,7 @@ Resources:
   S3AccessRole:
     Type: "AWS::IAM::Role"
     Properties:
-      Path: "/"     
+      Path: "/"
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -128,16 +254,16 @@ Resources:
       PolicyName: S3AccessRolePolicy
       PolicyDocument:
         Version: "2012-10-17"
-        Statement:       
+        Statement:
         - Effect: Allow
           Action:
           - s3:Get*
           - s3:List*
           - s3:AbortMultipartUpload
           Resource:
-            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/${DBDeployPackage}*'
-            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}'
-            - !Sub 'arn:${AWS::Partition}:s3:::${DeployBucket}/*'
+            - !Sub "arn:${AWS::Partition}:s3:::${DeployBucket}/${DBDeployPackage}*"
+            - !Sub "arn:${AWS::Partition}:s3:::${DeployBucket}"
+            - !Sub "arn:${AWS::Partition}:s3:::${DeployBucket}/*"
       Roles:
         - Ref: S3AccessRole
   S3AccessProfile:
@@ -167,7 +293,7 @@ Resources:
         - Key: Name
           Value: db1
       KeyName: !Ref KeyPairName
-      UserData: !Base64 
+      UserData: !Base64
         'Fn::Sub':
           - >
             #!/bin/bash -x
@@ -193,7 +319,7 @@ Resources:
             /install/app/deploy.sh
 
           - DeployRegion: !Ref DeployBucketRegion
-            DeployPackage: !Sub 's3://${DeployBucket}/${DBDeployPackage}'   
+            DeployPackage: !Sub 's3://${DeployBucket}/${DBDeployPackage}'
   TargetReplicaTwo:
     Type: "AWS::EC2::Instance"
     Metadata:
@@ -215,7 +341,7 @@ Resources:
         - Key: Name
           Value: db2
       KeyName: !Ref KeyPairName
-      UserData: !Base64 
+      UserData: !Base64
         'Fn::Sub':
           - >
             #!/bin/bash -x
@@ -263,7 +389,7 @@ Resources:
         - Key: Name
           Value: db0
       KeyName: !Ref KeyPairName
-      UserData: !Base64 
+      UserData: !Base64
         'Fn::Sub':
           - >
             #!/bin/bash -x
@@ -279,12 +405,12 @@ Resources:
             aws s3 cp ${DeployPackage} /install/app.tar.gz
 
             export OE_ENV=db0
-            
+
             export DBHostName=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
 
             export DBHostName1=${DBHostName1}
-            
-            export DBHostName2=${DBHostName2}            
+
+            export DBHostName2=${DBHostName2}
 
             /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource SourceReplica --region ${AWS::Region}
 
@@ -301,7 +427,7 @@ Resources:
             DBHostName2:
               Fn::GetAtt:
                 - TargetReplicaTwo
-                - PrivateIp            
+                - PrivateIp
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Metadata:
