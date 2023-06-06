@@ -24,13 +24,139 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t3a.small
+    Default: t3.large
     AllowedValues:
-      - t3a.small
-      - t3a.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.large
       - t3a.xlarge
       - t3a.2xlarge
+      - m6i.large
+      - m6i.xlarge
+      - m6i.2xlarge
+      - m6i.4xlarge
+      - m6i.8xlarge
+      - m6i.12xlarge
+      - m6i.16xlarge
+      - m6i.24xlarge
+      - m6i.32xlarge
+      - m6id.large
+      - m6id.xlarge
+      - m6id.2xlarge
+      - m6id.4xlarge
+      - m6id.8xlarge
+      - m6id.12xlarge
+      - m6id.16xlarge
+      - m6id.24xlarge
+      - m6id.32xlarge
+      - m6in.large
+      - m6in.xlarge
+      - m6in.2xlarge
+      - m6in.4xlarge
+      - m6in.8xlarge
+      - m6in.12xlarge
+      - m6in.16xlarge
+      - m6in.24xlarge
+      - m6in.32xlarge
+      - m6idn.large
+      - m6idn.xlarge
+      - m6idn.2xlarge
+      - m6idn.4xlarge
+      - m6idn.8xlarge
+      - m6idn.12xlarge
+      - m6idn.16xlarge
+      - m6idn.24xlarge
+      - m6idn.32xlarge
+      - m6a.large
+      - m6a.xlarge
+      - m6a.2xlarge
+      - m6a.4xlarge
+      - m6a.8xlarge
+      - m6a.12xlarge
+      - m6a.16xlarge
+      - m6a.24xlarge
+      - m6a.32xlarge
+      - m6a.48xlarge
+      - c6i.xlarge
+      - c6i.2xlarge
+      - c6i.4xlarge
+      - c6i.8xlarge
+      - c6i.12xlarge
+      - c6i.16xlarge
+      - c6i.24xlarge
+      - c6i.32xlarge
+      - c6id.xlarge
+      - c6id.2xlarge
+      - c6id.4xlarge
+      - c6id.8xlarge
+      - c6id.12xlarge
+      - c6id.16xlarge
+      - c6id.24xlarge
+      - c6id.32xlarge
+      - c6in.xlarge
+      - c6in.2xlarge
+      - c6in.4xlarge
+      - c6in.8xlarge
+      - c6in.12xlarge
+      - c6in.16xlarge
+      - c6in.24xlarge
+      - c6in.32xlarge
+      - c6a.xlarge
+      - c6a.2xlarge
+      - c6a.4xlarge
+      - c6a.8xlarge
+      - c6a.12xlarge
+      - c6a.16xlarge
+      - c6a.24xlarge
+      - c6a.32xlarge
+      - c6a.48xlarge
+      - r6i.large
+      - r6i.xlarge
+      - r6i.2xlarge
+      - r6i.4xlarge
+      - r6i.8xlarge
+      - r6i.12xlarge
+      - r6i.16xlarge
+      - r6i.24xlarge
+      - r6i.32xlarge
+      - r6id.large
+      - r6id.xlarge
+      - r6id.2xlarge
+      - r6id.4xlarge
+      - r6id.8xlarge
+      - r6id.12xlarge
+      - r6id.16xlarge
+      - r6id.24xlarge
+      - r6id.32xlarge
+      - r6in.large
+      - r6in.xlarge
+      - r6in.2xlarge
+      - r6in.4xlarge
+      - r6in.8xlarge
+      - r6in.12xlarge
+      - r6in.16xlarge
+      - r6in.24xlarge
+      - r6in.32xlarge
+      - r6idn.large
+      - r6idn.xlarge
+      - r6idn.2xlarge
+      - r6idn.4xlarge
+      - r6idn.8xlarge
+      - r6idn.12xlarge
+      - r6idn.16xlarge
+      - r6idn.24xlarge
+      - r6idn.32xlarge
+      - r6a.large
+      - r6a.xlarge
+      - r6a.2xlarge
+      - r6a.4xlarge
+      - r6a.8xlarge
+      - r6a.12xlarge
+      - r6a.16xlarge
+      - r6a.24xlarge
+      - r6a.32xlarge
+      - r6a.48xlarge
     ConstraintDescription: must be a valid EC2 instance type.
   EmailAddress:
     Description: Email Address for notification
@@ -39,7 +165,7 @@ Parameters:
       ([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)
     ConstraintDescription: Must be a valid email id.
   KeyPairName:
-    Type: 'AWS::EC2::KeyPair::KeyName'
+    Type: "AWS::EC2::KeyPair::KeyName"
     Description: Name of an existing EC2 KeyPair.
   WebAccessCIDR:
     AllowedPattern: >-
@@ -49,19 +175,19 @@ Parameters:
     Type: String
   PrivateSubnet1ID:
     Description: Private Subnet Id 1
-    Type: 'AWS::EC2::Subnet::Id'
+    Type: "AWS::EC2::Subnet::Id"
   PrivateSubnet2ID:
     Description: Private Subnet Id 2
-    Type: 'AWS::EC2::Subnet::Id'
+    Type: "AWS::EC2::Subnet::Id"
   PublicSubnet1ID:
     Description: Public Subnet Id 1
-    Type: 'AWS::EC2::Subnet::Id'
+    Type: "AWS::EC2::Subnet::Id"
   PublicSubnet2ID:
     Description: Public Subnet Id 2
-    Type: 'AWS::EC2::Subnet::Id'
+    Type: "AWS::EC2::Subnet::Id"
   VPCID:
-    Description: 'ID of the VPC (e.g., vpc-0343606e)'
-    Type: 'AWS::EC2::VPC::Id'
+    Description: "ID of the VPC (e.g., vpc-0343606e)"
+    Type: "AWS::EC2::VPC::Id"
   DBHostName:
     Description: IP Address of SourceReplica Instance
     Type: String
@@ -82,46 +208,46 @@ Mappings:
     AMI:
       PASOEAMZNLINUX2: Amazon Linux 2 AMI with PAS for OpenEdge
     af-south-1:
-      PASOEAMZNLINUX2: ami-098c6679f18127cf3
+      PASOEAMZNLINUX2: ami-0c281b154dd811948
     ap-east-1:
-      PASOEAMZNLINUX2: ami-04399f1af4d4a757b
+      PASOEAMZNLINUX2: ami-0b61a0507f9c4b3dc
     ap-northeast-1:
-      PASOEAMZNLINUX2: ami-0a0dfc0ee2000117b
+      PASOEAMZNLINUX2: ami-09532d784a4b748f6
     ap-northeast-2:
-      PASOEAMZNLINUX2: ami-07e1aa13a97050236
+      PASOEAMZNLINUX2: ami-04f9062f218e2e470
     ap-south-1:
-      PASOEAMZNLINUX2: ami-0244e02bcccca2ed5
+      PASOEAMZNLINUX2: ami-07955cfec4b6e87ad
     ap-southeast-1:
-      PASOEAMZNLINUX2: ami-0b809c5b46d894417
+      PASOEAMZNLINUX2: ami-0cd5f8a8496a1901c
     ap-southeast-2:
-      PASOEAMZNLINUX2: ami-0679d6ad14b177593
+      PASOEAMZNLINUX2: ami-0f226445cb78c05d8
     ca-central-1:
-      PASOEAMZNLINUX2: ami-0cfc7393b8902b00a
+      PASOEAMZNLINUX2: ami-0289a0b4ad342adc5
     eu-central-1:
-      PASOEAMZNLINUX2: ami-062513d4f53ab87bd
+      PASOEAMZNLINUX2: ami-08e0f0207d1ab58b0
     eu-north-1:
-      PASOEAMZNLINUX2: ami-0b2e979fa69aaac7d
+      PASOEAMZNLINUX2: ami-02c0d0e2eaf72abf4
     eu-south-1:
-      PASOEAMZNLINUX2: ami-047e5eacedab72bfd
+      PASOEAMZNLINUX2: ami-099fcf343ced32d87
     eu-west-1:
-      PASOEAMZNLINUX2: ami-03ee720fa13f6e28f
+      PASOEAMZNLINUX2: ami-0f40ef92d4e0987c6
     eu-west-2:
-      PASOEAMZNLINUX2: ami-01839ea9d30f3961d
+      PASOEAMZNLINUX2: ami-0e079c6a6f04b774c
     eu-west-3:
-      PASOEAMZNLINUX2: ami-06041f62451752841
+      PASOEAMZNLINUX2: ami-08f880de72910f409
     sa-east-1:
-      PASOEAMZNLINUX2: ami-038a50d32ee4afc8a
+      PASOEAMZNLINUX2: ami-05a9dbddb4865f867
     us-east-1:
-      PASOEAMZNLINUX2: ami-0ab388d63653b92e9
+      PASOEAMZNLINUX2: ami-01509876f9479d692
     us-east-2:
-      PASOEAMZNLINUX2: ami-0de6207a1f6a49fff
+      PASOEAMZNLINUX2: ami-0e64ee530d5e7296d
     us-west-1:
-      PASOEAMZNLINUX2: ami-0be6bf5e85a74bb47
+      PASOEAMZNLINUX2: ami-08511b1e7eff4797d
     us-west-2:
-      PASOEAMZNLINUX2: ami-0291c076833b761a2
+      PASOEAMZNLINUX2: ami-0eb4dcdcc76f797f3
 Resources:
   NotificationTopic:
-    Type: 'AWS::SNS::Topic'
+    Type: "AWS::SNS::Topic"
     Properties:
       Subscription:
         - Endpoint: !Ref EmailAddress
@@ -219,7 +345,7 @@ Resources:
     Properties:
       IamInstanceProfile: !Ref S3AccessProfile
       KeyName: !Ref KeyPairName
-      ImageId: !FindInMap 
+      ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
         - PASOEAMZNLINUX2
@@ -378,10 +504,10 @@ Resources:
 Outputs:
   URL:
     Description: The URL of PASOE
-    Value: !Join 
+    Value: !Join
       - ''
       - - 'http://'
-        - !GetAtt 
+        - !GetAtt
           - ApplicationLoadBalancer
           - DNSName
 

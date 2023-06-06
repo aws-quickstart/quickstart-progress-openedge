@@ -24,13 +24,139 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t3a.medium
+    Default: t3.large
     AllowedValues:
-      - t3a.small
-      - t3a.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - t3a.large
       - t3a.xlarge
       - t3a.2xlarge
+      - m6i.large
+      - m6i.xlarge
+      - m6i.2xlarge
+      - m6i.4xlarge
+      - m6i.8xlarge
+      - m6i.12xlarge
+      - m6i.16xlarge
+      - m6i.24xlarge
+      - m6i.32xlarge
+      - m6id.large
+      - m6id.xlarge
+      - m6id.2xlarge
+      - m6id.4xlarge
+      - m6id.8xlarge
+      - m6id.12xlarge
+      - m6id.16xlarge
+      - m6id.24xlarge
+      - m6id.32xlarge
+      - m6in.large
+      - m6in.xlarge
+      - m6in.2xlarge
+      - m6in.4xlarge
+      - m6in.8xlarge
+      - m6in.12xlarge
+      - m6in.16xlarge
+      - m6in.24xlarge
+      - m6in.32xlarge
+      - m6idn.large
+      - m6idn.xlarge
+      - m6idn.2xlarge
+      - m6idn.4xlarge
+      - m6idn.8xlarge
+      - m6idn.12xlarge
+      - m6idn.16xlarge
+      - m6idn.24xlarge
+      - m6idn.32xlarge
+      - m6a.large
+      - m6a.xlarge
+      - m6a.2xlarge
+      - m6a.4xlarge
+      - m6a.8xlarge
+      - m6a.12xlarge
+      - m6a.16xlarge
+      - m6a.24xlarge
+      - m6a.32xlarge
+      - m6a.48xlarge
+      - c6i.xlarge
+      - c6i.2xlarge
+      - c6i.4xlarge
+      - c6i.8xlarge
+      - c6i.12xlarge
+      - c6i.16xlarge
+      - c6i.24xlarge
+      - c6i.32xlarge
+      - c6id.xlarge
+      - c6id.2xlarge
+      - c6id.4xlarge
+      - c6id.8xlarge
+      - c6id.12xlarge
+      - c6id.16xlarge
+      - c6id.24xlarge
+      - c6id.32xlarge
+      - c6in.xlarge
+      - c6in.2xlarge
+      - c6in.4xlarge
+      - c6in.8xlarge
+      - c6in.12xlarge
+      - c6in.16xlarge
+      - c6in.24xlarge
+      - c6in.32xlarge
+      - c6a.xlarge
+      - c6a.2xlarge
+      - c6a.4xlarge
+      - c6a.8xlarge
+      - c6a.12xlarge
+      - c6a.16xlarge
+      - c6a.24xlarge
+      - c6a.32xlarge
+      - c6a.48xlarge
+      - r6i.large
+      - r6i.xlarge
+      - r6i.2xlarge
+      - r6i.4xlarge
+      - r6i.8xlarge
+      - r6i.12xlarge
+      - r6i.16xlarge
+      - r6i.24xlarge
+      - r6i.32xlarge
+      - r6id.large
+      - r6id.xlarge
+      - r6id.2xlarge
+      - r6id.4xlarge
+      - r6id.8xlarge
+      - r6id.12xlarge
+      - r6id.16xlarge
+      - r6id.24xlarge
+      - r6id.32xlarge
+      - r6in.large
+      - r6in.xlarge
+      - r6in.2xlarge
+      - r6in.4xlarge
+      - r6in.8xlarge
+      - r6in.12xlarge
+      - r6in.16xlarge
+      - r6in.24xlarge
+      - r6in.32xlarge
+      - r6idn.large
+      - r6idn.xlarge
+      - r6idn.2xlarge
+      - r6idn.4xlarge
+      - r6idn.8xlarge
+      - r6idn.12xlarge
+      - r6idn.16xlarge
+      - r6idn.24xlarge
+      - r6idn.32xlarge
+      - r6a.large
+      - r6a.xlarge
+      - r6a.2xlarge
+      - r6a.4xlarge
+      - r6a.8xlarge
+      - r6a.12xlarge
+      - r6a.16xlarge
+      - r6a.24xlarge
+      - r6a.32xlarge
+      - r6a.48xlarge
     ConstraintDescription: must be a valid EC2 instance type.
   EmailAddress:
     Description: Email Address for notification
@@ -64,7 +190,7 @@ Parameters:
     Type: 'AWS::EC2::VPC::Id'
   PASOEURL:
     Description: URL to ELB to access PASOE
-    Type: String    
+    Type: String
   MinScalingInstances:
     Description: Minimum number of EC2 instances in ASG
     Type: String
@@ -76,47 +202,43 @@ Mappings:
     AMI:
       AmazonLinux2AMI: Amazon Linux 2 AMI
     af-south-1:
-      AmazonLinux2AMI: ami-0ec47ddb564d75b64
+      AmazonLinux2AMI: ami-0c9919139cb112e21
     ap-east-1:
-      AmazonLinux2AMI: ami-49bbfa38
+      AmazonLinux2AMI: ami-0f80f09f43db27f08
     ap-northeast-1:
-      AmazonLinux2AMI: ami-0a1c2ec61571737db
+      AmazonLinux2AMI: ami-07c2a88388bb80eb0
     ap-northeast-2:
-      AmazonLinux2AMI: ami-01af223aa7f274198
-    ap-northeast-3:
-      AmazonLinux2AMI: ami-053e733f02a27d9fc
+      AmazonLinux2AMI: ami-073858dcf4e30e586
     ap-south-1:
-      AmazonLinux2AMI: ami-0447a12f28fddb066
+      AmazonLinux2AMI: ami-078efad6f7ec18b8a
     ap-southeast-1:
-      AmazonLinux2AMI: ami-0615132a0f36d24f4
+      AmazonLinux2AMI: ami-06ebb7936bfa62864
     ap-southeast-2:
-      AmazonLinux2AMI: ami-088ff0e3bde7b3fdf
+      AmazonLinux2AMI: ami-0da25504d467cb134
     ca-central-1:
-      AmazonLinux2AMI: ami-0f75c2980c6a5851d
+      AmazonLinux2AMI: ami-0cbfa6bba4589dcbb
     eu-central-1:
-      AmazonLinux2AMI: ami-0a02ee601d742e89f
+      AmazonLinux2AMI: ami-08e415170f52d1657
     eu-north-1:
-      AmazonLinux2AMI: ami-04697c9bb5d6135a2
+      AmazonLinux2AMI: ami-042bae94a952c9eba
     eu-south-1:
-      AmazonLinux2AMI: ami-0f9b9a8cf93d838d0
+      AmazonLinux2AMI: ami-08226db9ffa402896
     eu-west-1:
-      AmazonLinux2AMI: ami-0ea3405d2d2522162
+      AmazonLinux2AMI: ami-0e23c576dacf2e3df
     eu-west-2:
-      AmazonLinux2AMI: ami-032598fcc7e9d1c7a
+      AmazonLinux2AMI: ami-0a6006bac3b9bb8d3
     eu-west-3:
-      AmazonLinux2AMI: ami-01c72e187b357583b
-    me-south-1:
-      AmazonLinux2AMI: ami-01b31491b74045c0c
+      AmazonLinux2AMI: ami-0c39e8f767a5e89c8
     sa-east-1:
-      AmazonLinux2AMI: ami-0477a95397a9154b3
+      AmazonLinux2AMI: ami-0c4bcf0e0554b7eb9
     us-east-1:
-      AmazonLinux2AMI: ami-09d95fab7fff3776c
+      AmazonLinux2AMI: ami-0bef6cc322bfff646
     us-east-2:
-      AmazonLinux2AMI: ami-026dea5602e368e96
+      AmazonLinux2AMI: ami-05842f1afbf311a43
     us-west-1:
-      AmazonLinux2AMI: ami-04e59c05167ea7bd5
+      AmazonLinux2AMI: ami-04669a22aad391419
     us-west-2:
-      AmazonLinux2AMI: ami-0e34e7b9ca0ace12d
+      AmazonLinux2AMI: ami-03c7c1f17ee073747
 Resources:
   NotificationTopic:
     Type: 'AWS::SNS::Topic'
@@ -217,14 +339,14 @@ Resources:
     Properties:
       IamInstanceProfile: !Ref S3AccessProfile
       KeyName: !Ref KeyPairName
-      ImageId: !FindInMap 
+      ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
         - AmazonLinux2AMI
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref WebServerSecurityGroup
-      UserData: !Base64 
+      UserData: !Base64
         'Fn::Sub':
           - >
             #!/bin/bash -x
@@ -371,7 +493,7 @@ Resources:
           - id: F1000
             reason: "Standard Amazon practice"
     Properties:
-      GroupDescription: Enable HTTP to the load balancer 
+      GroupDescription: Enable HTTP to the load balancer
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -381,10 +503,10 @@ Resources:
 Outputs:
   URL:
     Description: The URL of WebServer
-    Value: !Join 
+    Value: !Join
       - ''
       - - 'http://'
-        - !GetAtt 
+        - !GetAtt
           - ApplicationLoadBalancer
           - DNSName
 
