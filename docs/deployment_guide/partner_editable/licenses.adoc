@@ -1,0 +1,7 @@
+// Include details about any licenses and how to sign up. Provide links as appropriate.
+
+There is no cost to use this Partner Solution, but you will be billed for any AWS services or resources that this Partner Solution deploys. For more information, refer to the https://fwd.aws/rA69w?[AWS Partner Solution General Information Guide^].
+
+This Quick Start requires an OpenEdge license. To use the Quick Start in a production environment, sign up for a license through the https://www.progress.com/campaigns/openedge/free-trial-2/?&utm_source=google&utm_medium=cpc&utm_campaign=openedge-brand-search-en-NA&ad_group=OpenEdge&utm_term=openedge&ad_copy=&ad_type=&ad_size=&ad_placement=&gclid=Cj0KCQjwz4z3BRCgARIsAES_OVeGrpyEnFrnt3HDhwQLmzTKAu_LbVR6k6vCfk8xTlfrDCUcLyRJbQMaAswOEALw_wcB&gclsrc=aw.ds[Progress website]. After the OpenEdge infrastructure launches, enter the license key to activate the software.
+
+The Quick Start requires a subscription to the Amazon Machine Image (AMI) for https://aws.amazon.com/marketplace/pp/B08CS3KFH5?qid=1596138361111&sr=0-2&ref_=srh_res_product_title[OpenEdge RDBMS] and the AMI for https://aws.amazon.com/marketplace/pp/B08CRKD9MY?qid=1596138361111&sr=0-1&ref_=srh_res_product_title[PAS for OpenEdge]. Additional pricing, terms, and conditions may apply. For more information, see link:#step-2.-subscribe-to-the-openedge-amis[step 2] in the deployment section.
