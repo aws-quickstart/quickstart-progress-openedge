@@ -1,3 +1,14 @@
 //Include any predeployment steps here, such as signing up for a Marketplace AMI or making any changes to a partner account. If there are no predeployment steps, leave this file empty.
 
 == Predeployment steps
+
+=== Subscribe to the {partner-product-name} AMI
+
+This Quick Start requires a subscription to the AMI for {partner-product-name} in AWS Marketplace.
+
+. Open the https://aws.amazon.com/marketplace/pp/B08CRKD9MY?qid=1594739011658&sr=0-3&ref_=srh_res_product_title[Progress Application Server (PAS) for OpenEdge^] page in AWS Marketplace, and then choose *Continue to Subscribe*.
+. Open the https://aws.amazon.com/marketplace/pp/B08CS3KFH5?qid=1594739011658&sr=0-1&ref_=srh_res_product_title[Progress OpenEdge RDBMS^] page in AWS Marketplace, and then choose *Continue to Subscribe*.
+. Review the terms and conditions for software usage, and then choose *Accept Terms*. +
+  A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the https://aws.amazon.com/marketplace/help/200799470[AWS Marketplace documentation^].
+
+. When the subscription process is complete, exit out of AWS Marketplace without further action. *Do not* provision the software from AWS Marketplace—the Quick Start deploys the AMI for you.

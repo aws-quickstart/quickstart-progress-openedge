@@ -1,3 +1,9 @@
 // Include any postdeployment steps here, such as steps necessary to test that the deployment was successful. If there are no postdeployment steps, leave this file empty.
 
+[#postdeploy1]
+.CloudFormation outputs
+image::../docs/deployment_guide/images/cfn_outputs.png[Postdeploy]
+
 == Postdeployment steps
+
+When the stack is successfully created, you can access the PAS for OpenEdge server and the web server using the values `PASOEURL` and `WebURL`, respectively, from the *Outputs* tab of the top-level stack.

@@ -1,7 +1,14 @@
 This guide covers the information you need to deploy the {partner-product-name} Partner Solution in the AWS Cloud.
 
-// Fill in the info in <angle brackets> for use on the landing page only: 
-This Amazon Web Services (AWS) Partner Solution deploys [<product name>](<partner's marketing product page>) in the AWS Cloud so that <purpose>. This solution is for <target users> who want to <do what> so that <why>. For more information, refer to the [<product name> documentation](<URL>).
+The Partner Solution is for users who want to deploy a highly available three-tier Progress OpenEdge stack on the AWS Cloud.
+
+Progress OpenEdge on AWS is a convenient way to create the infrastructure required to run an _n_-tier OpenEdge Advanced Business Language (ABL) application with a web user interface (UI), representational state transfer (REST) data services, and the OpenEdge database. It combines AWS services and OpenEdge functionality to achieve high availability, redundancy, and scalability.
+
+You can use the Partner Solution CloudFormation template to create a new infrastructure, or use the CloudFormation CLI to automate deployments of OpenEdge applications from a CI/CD pipeline.
+
+The template has user-provided deployment packages for the web server, Progress Application Server (PAS) for the OpenEdge application, and OpenEdge Relational Database Management System (RDBMS) for the OpenEdge database. Using this approach, you can package your on-premises application to deploy it to the AWS Cloud.
+
+The web server and PAS for OpenEdge dynamically download and install the latest packages when Amazon Elastic Compute Cloud (Amazon EC2) instances are created. This can be used to roll out new versions of the application if desired. The database configuration can use OpenEdge replication sets to provide redundancy.
 
 // Deploying this solution does not guarantee an organization’s compliance with any laws, certifications, policies, or other regulations. [Uncomment this statement only for solutions that relate to compliance. We'll add the corresponding reference part to the landing page and get legal approval before publishing.]
 
