@@ -1,2 +1,0 @@
-// Add steps as necessary for accessing the software, post-configuration, and testing. Don’t include full usage instructions for your software, but add links to your product documentation for that information.
-When the stack is successfully created, you can access the PAS for OpenEdge server and the web server using the values `PASOEURL` and `WebURL`, respectively, from the *Outputs* tab of the top-level stack.
